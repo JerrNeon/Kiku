@@ -1,8 +1,0 @@
-<templateSet group="AndroidXML">
-  <template name="mip" value="@mipmap/" description="@mipmap/" toReformat="false" toShortenFQNames="true">
-    <context>
-      <option name="XML" value="true" />
-      <option name="XML_TEXT" value="false" />
-    </context>
-  </template>
-</templateSet>
