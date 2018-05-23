@@ -1,9 +1,9 @@
 # AndroidProject
-一些项目中常用的Activity&Fragment、带刷新的Activity&Fragment、列表Activity&Fragment封装(包含权限RxPermission、
-ButterKnife、EventBus、状态栏一体化的集成)
-基础的启动页、引导页、主界面(带有版本更新服务)、富文本界面的封装
-Retrofit请求封装，包含基础的表单、json格式的请求，还有上传图片和下载文件的请求
-常用第三方SDK(QQ分享&登录、微信分享&登录&支付、支付宝支付、新浪微博登录、友盟统计、百度统计、Ping++、BugTags、诸葛IO)的封装
+# 一些项目中常用的Activity&Fragment、带刷新的Activity&Fragment、列表Activity&Fragment封装(包含权限RxPermission、
+# ButterKnife、EventBus、状态栏一体化的集成)
+# 基础的启动页、引导页、主界面(带有版本更新服务)、富文本界面的封装
+# Retrofit请求封装，包含基础的表单、json格式的请求，还有上传图片和下载文件的请求
+# 常用第三方SDK(QQ分享&登录、微信分享&登录&支付、支付宝支付、新浪微博登录、友盟统计、百度统计、Ping++、BugTags、诸葛IO)的封装
 
 1.如需使用Retrofit,请在Application中先调用RetrofitManager中的initRetrofit()方法(用于传入BaseUrl)
 2.如需使用ActivityManager,请在Application中先调用ActivityManager中的register()方法(用于传入Application)
