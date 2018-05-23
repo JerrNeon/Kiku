@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_sv"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GIF格式的特点是压缩比高，磁盘空间占用较少，所以这种图像格式迅速得到了广泛的应用。最初的GIF只是简单地用来存储单幅静止图像（称为GIF87a），后来随着技术发展，可以同时存储若干幅静止图像进而形成连续的动画，使之成为当时支持2D动画为数不多的格式之一（称为GIF89a），
+图片
+图片(59张)
+而在GIF89a图像中可指定透明区域，使图像具有非同一般的显示效果，这更使GIF风光十足。在Internet上大量采用的彩色动画文件多为这种格式的文件，也称为GIF89a格式文件。
+此外，考虑到网络传输中的实际情况，GIF图像格式还增加了渐显方式，也就是说，在图像传输过程中，用户可以先看到图像的大致轮廓，然后随着传输过程的继续而逐步看清图像中的细节部分，从而适应了用户“从朦胧到清楚”的观赏心理。
+但GIF有个小小的缺点，即不能存储超过256色的图像。尽管如此，这种格式仍在网络上大行其道应用，这和GIF图像文件短小、下载速度快、可用许多具有同样大小的图像文件组成动画等优势是分不开的
+图片
+图片(3张)
+。
+JPEG格式
+JPEG也是最常见的一种图像格式，它是由联合照片专家组（外语全称：Joint Photographic Experts Group）开发并以命名为“ISO 10918-1”，JPEG仅仅是一种俗称而已。JPEG文件的扩展名为.jpg或.jpeg，因其压缩技术十分先进，它用有损压缩方式去除冗余的图像和彩色数据，获取得极高的压缩率的同时能展现十分丰富生动的图像，换句话说，就是可以用最少的磁盘空间得到较好的图像质量。
+同时JPEG还是一种很灵活的格式，具有调节图像质量的功能，允许你用不同的压缩比例对这种文件压缩，比如我们最高可以把1.38MB的BMP位图文件压缩至20.3KB。当然我们完全可以在图像质量和文件尺寸之间找到平衡点。
+图片
+图片"/>
+    </LinearLayout>
+</ScrollView>

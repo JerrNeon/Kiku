@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+def config = rootProject.ext.android //config
+def dep = rootProject.ext.dependencies //dep
+def jPush = rootProject.ext.jpush //jpush
+
+android {
+    compileSdkVersion config.compileSdkVersion
+    defaultConfig {
+        applicationId config.applicationId
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
+        versionCode config.versionCode
+        versionName config.versionName
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [
+                JPUSH_PKGNAME: config.applicationId,
+                JPUSH_APPKEY : jPush.JPUSH_APPKEY, //JPush AppKey.
+                JPUSH_CHANNEL: jPush.JPUSH_CHANNEL, //default value
+        ]
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(':kiku')
+    implementation dep["junit"]
+
+    implementation dep["support-v4"]
+    implementation dep["appcompat-v7"]
+    implementation dep["design"]
+    implementation dep["recyclerview-v7"]
+    implementation dep["constraint-layout"]
+
+    implementation dep["butterknife"]
+    annotationProcessor dep["butterknife-annotationProcessor"]
+    implementation dep["retrofit"]
+    implementation dep["rxjava2"]
+    implementation dep["rxandroid2"]
+    implementation dep["rxlifecycle"]
+    implementation dep["rxlifecycle-android"]
+
+    implementation dep["BaseRecyclerViewAdapterHelper"]
+    implementation dep["SmartRefreshLayout"]
+
+}
