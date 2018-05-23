@@ -1,0 +1,7 @@
+<application>
+  <component name="IntentionManagerSettings">
+    <ignoreAction name="Android/Insert App Indexing API Code" />
+    <ignoreAction name="Java/Declaration/Split Declaration and Initialization" />
+    <ignoreAction name="Java/Declaration/Split Declaration" />
+  </component>
+</application>
