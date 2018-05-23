@@ -1,4 +1,4 @@
-# AndroidProject
+# KiKu
 ### 主要功能：
 * 一些项目中常用的Activity&Fragment、带刷新的Activity&Fragment、列表Activity&Fragment封装(包含权限RxPermission、
 * ButterKnife、EventBus、状态栏一体化的集成)
