@@ -66,7 +66,7 @@ public class VersionUpdateService extends Service {
         builder.setSmallIcon(versionUpdateVO.getAppIconResId());
         builder.setContentTitle(versionUpdateVO.getAppName());
         builder.setTicker(getResources().getString(R.string.versionUpdate_downloadStart));
-        final String downLoadFileName = versionUpdateVO.getAppName() + System.currentTimeMillis();
+        final String downLoadFileName = versionUpdateVO.getAppName();
         RetrofitManage.getInstance()
                 .getDownloadObservable(versionUpdateVO.getDownLoadUrl(), new ProgressListener() {
                     @Override
@@ -87,7 +87,8 @@ public class VersionUpdateService extends Service {
 
                     @Override
                     public String apply(ResponseBody responseBody) throws Exception {
-                        String fileSuffix = FileTypeUtils.getFileSuffix(responseBody.contentType().toString());//文件后缀名
+                        String mimeType = responseBody.contentType().type() + File.separator + responseBody.contentType().subtype();
+                        String fileSuffix = FileTypeUtils.getFileSuffix(mimeType);//文件后缀名
                         String filePath = ImageUtil.getFileCacheFile().getAbsolutePath() + File.separator + downLoadFileName + "." + fileSuffix;
                         FileIOUtils.writeFileFromIS(filePath, responseBody.byteStream());
                         return filePath;
