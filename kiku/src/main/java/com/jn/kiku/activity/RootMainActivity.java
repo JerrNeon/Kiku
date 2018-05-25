@@ -151,6 +151,8 @@ public abstract class RootMainActivity extends RootActivity implements IMainView
 
     @Override
     public void showVersionUpdateDialog() {
+        if (mVersionUpdateVO == null)
+            throw new NullPointerException("mVersionUpdateVO is null,please set VersionUpdateVO info");
         if (mVersionUpdateDialog == null) {
             mVersionUpdateDialog = VersionUpdateDialog.newInstance(VersionUpdateDialog.class, mVersionUpdateVO);
         }
