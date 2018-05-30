@@ -1,10 +1,15 @@
 # KiKu
 [![License](https://img.shields.io/badge/License%20-Apache%202-337ab7.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![JCenter](https://img.shields.io/badge/%20JCenter%20-1.0.0-5bc0de.svg)](https://bintray.com/jerrneon/maven/Kiku/_latestVersion)
+[![JCenter](https://img.shields.io/badge/%20JCenter%20-1.0.1-5bc0de.svg)](https://bintray.com/jerrneon/maven/Kiku/_latestVersion)
+[![JCenter](https://img.shields.io/badge/%20JCenter%20-1.0.1-5bc0de.svg)](https://bintray.com/jerrneon/maven/Kiku-ttp/_latestVersion)
 
-在 build.gradle 中添加依赖
+在 build.gradle 中添加依赖(基础库)
 
-    implementation com.jn.kiku:KiKu:1.0.0
+    implementation com.jn.kiku:KiKu:1.0.1
+    
+在 build.gradle 中添加依赖(第三方平台库)
+
+    implementation com.jn.kiku:KiKu-ttp:1.0.1
 
 ### 主要功能：
 * 一些项目中常用的Activity&Fragment、带刷新的Activity&Fragment、列表Activity&Fragment封装(包含权限RxPermission、

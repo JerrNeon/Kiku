@@ -31,7 +31,7 @@
             android:id="@+id/tv_commit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rectangle_greyline_corner8bottom_bg"
+            android:background="@drawable/rectangle_whitebg_corner8"
             android:gravity="center"
             android:paddingBottom="@dimen/dp_15"
             android:paddingTop="@dimen/dp_15"
