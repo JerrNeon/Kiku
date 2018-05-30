@@ -5,11 +5,11 @@
 
 在 build.gradle 中添加依赖(基础库)
 
-    implementation com.jn.kiku:KiKu:1.0.1
+    implementation 'com.jn.kiku:KiKu:1.0.1'
     
 在 build.gradle 中添加依赖(第三方平台库)
 
-    implementation com.jn.kiku:KiKu-ttp:1.0.1
+    implementation 'com.jn.kiku:KiKu-ttp:1.0.1'
 
 ### 主要功能：
 * 一些项目中常用的Activity&Fragment、带刷新的Activity&Fragment、列表Activity&Fragment封装(包含权限RxPermission、
