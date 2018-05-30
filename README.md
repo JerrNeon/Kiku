@@ -1,7 +1,7 @@
 # KiKu
 [![License](https://img.shields.io/badge/License%20-Apache%202-337ab7.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![JCenter](https://img.shields.io/badge/%20JCenter%20-1.0.1-5bc0de.svg)](https://bintray.com/jerrneon/maven/Kiku/_latestVersion)
-[![JCenter](https://img.shields.io/badge/%20JCenter%20-1.0.1-5bc0de.svg)](https://bintray.com/jerrneon/maven/Kiku-ttp/_latestVersion)
+[![JCenter](https://img.shields.io/badge/%20Kiku.JCenter%20-1.0.1-5bc0de.svg)](https://bintray.com/jerrneon/maven/Kiku/_latestVersion)
+[![JCenter](https://img.shields.io/badge/%20Kiku.ttp.JCenter%20-1.0.1-5bc0de.svg)](https://bintray.com/jerrneon/maven/Kiku-ttp/_latestVersion)
 
 在 build.gradle 中添加依赖(基础库)
 
