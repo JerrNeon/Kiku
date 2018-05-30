@@ -35,6 +35,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':kiku')
+    implementation project(':kiku-ttp')
     implementation dep["junit"]
 
     implementation dep["support-v4"]

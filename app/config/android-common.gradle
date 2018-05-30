@@ -1,0 +1,152 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
+
+def config = rootProject.ext.android // 配置
+def dep = rootProject.ext.dependencies // 依赖
+def greenDao = rootProject.ext.greendao // greenDao
+def signConfig = rootProject.ext.signconfig // signConfig
+def jpush = rootProject.ext.jpush //jpush
+def bugTags = rootProject.ext.bugtags //bugtags
+
+android {
+    compileSdkVersion config.compileSdkVersion
+    buildToolsVersion config.buildToolsVersion
+    useLibrary 'org.apache.http.legacy'
+
+    defaultConfig {
+        applicationId config.applicationId
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
+        versionCode config.versionCode
+        versionName config.versionName
+        multiDexEnabled config.multiDexEnabled
+
+        manifestPlaceholders = [
+                JPUSH_PKGNAME: config.applicationId,
+                JPUSH_APPKEY : jpush.JPUSH_APPKEY, //JPush上注册的包名对应的appkey.
+                JPUSH_CHANNEL: jpush.JPUSH_CHANNEL, //暂时填写默认值即可.
+        ]
+        ndk {
+            // 只适配 armeabi cpu  "mips"
+            abiFilters "armeabi", "armeabi-v7a", "x86"
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file(signConfig.storeFile)
+            storePassword signConfig.storePassword
+            keyAlias signConfig.keyAlias
+            keyPassword signConfig.keyPassword
+            applicationVariants.all { variant ->
+                variant.outputs.all { output ->
+                    outputFileName = signConfig.fileName
+                }
+            }
+        }
+        release {
+            storeFile file(signConfig.storeFile)
+            storePassword signConfig.storePassword
+            keyAlias signConfig.keyAlias
+            keyPassword signConfig.keyPassword
+        }
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "String", "LOG_TAG", "\"Censh\""
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            buildConfigField "String", "LOG_TAG", "\"Censh\""
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //针对greenDao的一些配置
+    greendao {
+        schemaVersion greenDao.schemaVersion //数据库版本号
+        daoPackage greenDao.daoPackage //自动生成的工具类的包名
+        targetGenDir greenDao.targetGenDir //路径
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ["libs"]
+        }
+    }
+
+    // 取消掉系统对.9图片的检查
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
+
+    //多渠道打包
+    flavorDimensions "default"
+    productFlavors {
+        shengshi {
+            manifestPlaceholders = [CHANNEL_VALUE: "盛时网"]
+        }
+        tencent {
+            manifestPlaceholders = [CHANNEL_VALUE: "腾讯应用宝"]
+        }
+        _360 {
+            manifestPlaceholders = [CHANNEL_VALUE: "360手机助手"]
+        }
+        huawei {
+            manifestPlaceholders = [CHANNEL_VALUE: "华为"]
+        }
+        xiaomi {
+            manifestPlaceholders = [CHANNEL_VALUE: "小米"]
+        }
+        baidu {
+            manifestPlaceholders = [CHANNEL_VALUE: "百度手机助手"]
+        }
+        _91 {
+            manifestPlaceholders = [CHANNEL_VALUE: "91助手"]
+        }
+        anzhuo {
+            manifestPlaceholders = [CHANNEL_VALUE: "安卓市场"]
+        }
+        wandoujia {
+            manifestPlaceholders = [CHANNEL_VALUE: "豌豆荚"]
+        }
+    }
+
+}
+
+//Bugtags 插件配置
+afterEvaluate {
+    android.applicationVariants.each { variant ->
+        def bugtagsAppKey = null
+        def bugtagsAppSecret = null
+        if (variant.name.contains("debug")) {
+            bugtagsAppKey = bugTags.appKey_debug
+            bugtagsAppSecret = bugTags.appSecret_debug
+        } else if (variant.name.contains("release")) {
+            bugtagsAppKey = bugTags.appKey_release
+            bugtagsAppSecret = bugTags.appSecret_release
+        }
+        variant.ext.bugtagsAppKey = bugtagsAppKey
+        variant.ext.bugtagsAppSecret = bugtagsAppSecret
+    }
+}
+apply plugin: 'com.bugtags.library.plugin'
+
+//Bugtags 插件配置
+bugtags {
+    //自动上传符号表功能配置，如果需要根据 build varint 配置，请参考帮助中心->符号表->Android 符号表->配置自动上传符号表
+    mappingUploadEnabled bugTags.mappingUploadEnabled
+    //网络跟踪功能配置(企业版)
+    trackingNetworkEnabled bugTags.trackingNetworkEnabled
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+    google()
+}

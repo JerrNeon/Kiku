@@ -28,7 +28,8 @@ public class LogUtils {
      */
     public static void init(boolean logEnable, String tagName) {
         LOGENABLE = logEnable;
-        TAG = tagName;
+        if (tagName != null && !"".equals(tagName))
+            TAG = tagName;
     }
 
     // 下面四个是默认tag的函数

@@ -3,8 +3,8 @@ apply plugin: 'com.android.library'
 def dep = rootProject.ext.dependencies // dep
 
 ext {
-    PUBLISH_GROUP_ID = 'com.jn.kiku'
-    PUBLISH_ARTIFACT_ID = 'KiKu'
+    PUBLISH_GROUP_ID = 'com.jn.kiku.ttp'
+    PUBLISH_ARTIFACT_ID = 'KiKu-ttp'
     PUBLISH_VERSION = '1.0.0'
 }
 
@@ -45,6 +45,7 @@ android {
     //system cancel check.9 image
     aaptOptions.cruncherEnabled = false
     aaptOptions.useNewCruncher = false
+
 }
 
 dependencies {
@@ -54,34 +55,36 @@ dependencies {
     implementation dep["junit"]
     implementation dep["multidex"]
 
-    //Tencent WebView
-    implementation files("libs/tbs_sdk_thirdapp_v3.1.0.1034_43100_sharewithdownload_obfs_20170301_182143.jar")
+    implementation files('libs/BaiduLBS_Android.jar')//baiDuMap
+    implementation files('libs/open_sdk_r5781.jar')//QQ
+    implementation files('libs/mta-sdk-1.6.2.jar')//QQ
+    implementation files('libs/alipaySdk-20161222.jar')//Alipay
+    implementation files("libs/zhuge_EE_3.0.1.jar")//zhugeio
+    //sina
+    implementation dep["sinaWeiBo-sdk"]
+    //jpush
+    implementation dep["jpush-sdk"]
+    implementation dep["jpush-core"]
+    //Ping++
+    implementation dep["pingpp"]
+    implementation dep["pingpp-wechat"]
+    implementation dep["pingpp-upacp"]
+    //mob
+    implementation dep["mob_kefu"]
+    //umeng
+    implementation dep["umeng-common"]
+    implementation dep["umeng-analytics"]
+    //baidu
+    implementation dep["mtj-sdk"]
+    //bugtags
+    debugImplementation dep["bugtags-debug"]
+    releaseImplementation dep["bugtags-release"]
 
-    implementation dep["support-v4"]
-    implementation dep["appcompat-v7"]
-    implementation dep["design"]
-    implementation dep["recyclerview-v7"]
-
-    implementation dep["butterknife"]
-    annotationProcessor dep["butterknife-annotationProcessor"]
-    implementation dep["eventbus"]
     implementation dep["gson"]
-    implementation dep["glide"]
     implementation dep["retrofit"]
     implementation dep["retrofit-converter-gson"]
     implementation dep["retrofit-adapter-rxjava2"]
-    implementation dep["okhttp3-logging-interceptor"]
-    implementation dep["rxjava2"]
     implementation dep["rxandroid2"]
-    implementation dep["rxlifecycle"]
-    implementation dep["rxlifecycle-android"]
-    implementation dep["rxpermissions2"]
-
-    implementation dep["BaseRecyclerViewAdapterHelper"]
-    implementation dep["SmartRefreshLayout"]
-
-    //jsoup parse Html
-    implementation dep["jsoup"]
 }
 
 apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'

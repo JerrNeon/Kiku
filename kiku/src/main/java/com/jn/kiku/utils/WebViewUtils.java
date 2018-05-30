@@ -1,6 +1,7 @@
 package com.jn.kiku.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.PixelFormat;
 import android.view.KeyEvent;
 import android.view.View;
@@ -8,6 +9,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+
+import com.tencent.smtt.sdk.QbSdk;
+import com.tencent.smtt.sdk.TbsListener;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -77,6 +81,42 @@ public class WebViewUtils {
     }
 
     /**
+     * 初始化腾讯的WebViewX5内核环境
+     *
+     * @param context Context
+     */
+    public static void initX5Environment(Context context) {
+        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
+
+            @Override
+            public void onViewInitFinished(boolean arg0) {
+                LogUtils.i("TencentWebView: onViewInitFinished is " + arg0);
+            }
+
+            @Override
+            public void onCoreInitFinished() {
+            }
+        };
+        QbSdk.setTbsListener(new TbsListener() {
+            @Override
+            public void onDownloadFinish(int i) {
+                LogUtils.i("TencentWebView: onDownloadFinish");
+            }
+
+            @Override
+            public void onInstallFinish(int i) {
+                LogUtils.i("TencentWebView: onInstallFinish");
+            }
+
+            @Override
+            public void onDownloadProgress(int i) {
+                LogUtils.i("TencentWebView: onDownloadProgress:" + i);
+            }
+        });
+        QbSdk.initX5Environment(context, cb);
+    }
+
+    /**
      * 加载富文本
      *
      * @param webView
@@ -111,6 +151,7 @@ public class WebViewUtils {
 
     /**
      * 加载Url
+     *
      * @param webView
      * @param url
      */

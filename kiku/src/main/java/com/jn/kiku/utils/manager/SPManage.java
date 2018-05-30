@@ -3,7 +3,6 @@ package com.jn.kiku.utils.manager;
 import android.content.Context;
 
 import com.google.gson.JsonParseException;
-import com.jn.kiku.ttp.jpush.JPushManage;
 import com.jn.kiku.utils.SPUtils;
 import com.jn.kiku.utils.gson.JsonUtils;
 
@@ -55,8 +54,6 @@ public class SPManage {
 
     public void clearUserInfo() {
         SPUtils.remove(mContext, USER_INFO);
-        //清除别名(退出登录或被顶号时,以防两台手机同时登录同一个手机号)
-        JPushManage.getInstance(mContext).setAlias("");
     }
 
     public boolean getFirstGuide() {
