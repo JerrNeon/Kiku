@@ -11,6 +11,9 @@ import com.jn.kiku.annonation.LoadCompleteType;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+
 /**
  * @param <T> 适配器实体泛型
  * @version V2.0
@@ -37,6 +40,25 @@ public interface IRvView<T> {
     RecyclerView.LayoutManager getLayoutManager();
 
     /**
+     * 获取请求Observable
+     *
+     * @return
+     */
+    Observable getRequestObservable();
+
+    /**
+     * 获取响应Observer
+     *
+     * @return
+     */
+    Observer getResponseObserver();
+
+    /**
+     * 关联被观察者和观察者，发送请求
+     */
+    void subscribe();
+
+    /**
      * 初始化刷新相关控件
      */
     void initRvView();
@@ -45,8 +67,22 @@ public interface IRvView<T> {
      * 显示完成布局
      *
      * @param loadCompleteType 加载完成类型
+     * @param data             数据
      */
     void showLoadCompleteView(@LoadCompleteType int loadCompleteType, List<T> data);
+
+    /**
+     * 显示成功布局
+     *
+     * @param totalSize 总数
+     * @param data      数据
+     */
+    void showLoadSuccessView(int totalSize, List<T> data);
+
+    /**
+     * 显示失败布局
+     */
+    void showLoadErrorView();
 
     /**
      * 设置加载失败或数据为空布局资源

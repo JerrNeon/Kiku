@@ -19,8 +19,14 @@ import com.jn.kiku.annonation.RefreshViewType;
 import com.jn.kiku.common.api.IRvView;
 import com.jn.kiku.utils.NetUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.trello.rxlifecycle2.android.ActivityEvent;
 
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @param <T>
@@ -39,6 +45,8 @@ public abstract class RootRvActivity<T> extends RootRefreshActivity implements I
     protected ImageView mIvLoadingFailure;//empty or failure icon
     protected TextView mTvLoadingFailure;//empty or failure hint text
     protected BaseRvAdapter<T> mAdapter = null;//adapter
+    protected Observable mRequestObservable = null;//Request Observable
+    protected Observer mResponseObserver = null;//Response Observer
 
     @Override
     public int getLayoutItemResourceId() {
@@ -56,6 +64,7 @@ public abstract class RootRvActivity<T> extends RootRefreshActivity implements I
     public void sendRequest() {
         super.sendRequest();
         showProgressDialog();
+        subscribe();
     }
 
     @Override
@@ -94,6 +103,18 @@ public abstract class RootRvActivity<T> extends RootRefreshActivity implements I
         return onItemChildLongClick(adapter, view, mAdapter.getItem(position));
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public void subscribe() {
+        if (mRequestObservable != null && mResponseObserver != null) {
+            mRequestObservable
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(this.bindUntilEvent(ActivityEvent.DESTROY))
+                    .subscribe(mResponseObserver);
+        }
+    }
+
     @Override
     public void initRvView() {
         mRecyclerView = findViewById(R.id.rv_common);
@@ -113,6 +134,9 @@ public abstract class RootRvActivity<T> extends RootRefreshActivity implements I
         });
         mAdapter.setEmptyView(mEmptyView);//set empty or failure view
         mAdapter.isUseEmpty(false);//don t show empty or failure view first
+
+        mRequestObservable = getRequestObservable();
+        mResponseObserver = getResponseObserver();
     }
 
     @Override
@@ -157,6 +181,17 @@ public abstract class RootRvActivity<T> extends RootRefreshActivity implements I
                 }
             }
         }
+    }
+
+    @Override
+    public void showLoadSuccessView(int totalSize, List<T> data) {
+        mTotalSize = totalSize;
+        showLoadCompleteView(LoadCompleteType.SUCCESS, data);
+    }
+
+    @Override
+    public void showLoadErrorView() {
+        showLoadCompleteView(LoadCompleteType.ERROR, null);
     }
 
     @Override

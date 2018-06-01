@@ -19,8 +19,14 @@ import com.jn.kiku.annonation.RefreshViewType;
 import com.jn.kiku.common.api.IRvView;
 import com.jn.kiku.utils.NetUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @param <T> 适配器实体泛型
@@ -39,6 +45,8 @@ public abstract class RootRvFragment<T> extends RootRefreshFragment implements I
     protected ImageView mIvLoadingFailure;//加载失败或空数据图标
     protected TextView mTvLoadingFailure;//加载失败或空数据提示文字
     protected BaseRvAdapter<T> mAdapter = null;//适配器
+    protected Observable mRequestObservable = null;//Request Observable
+    protected Observer mResponseObserver = null;//Response Observer
 
     @Override
     public int getLayoutItemResourceId() {
@@ -58,6 +66,7 @@ public abstract class RootRvFragment<T> extends RootRefreshFragment implements I
     public void sendRequest() {
         super.sendRequest();
         showProgressDialog();
+        subscribe();
     }
 
     @Override
@@ -96,6 +105,18 @@ public abstract class RootRvFragment<T> extends RootRefreshFragment implements I
         return onItemChildLongClick(adapter, view, mAdapter.getItem(position));
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public void subscribe() {
+        if (mRequestObservable != null && mResponseObserver != null) {
+            mRequestObservable
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(this.bindUntilEvent(FragmentEvent.DESTROY_VIEW))
+                    .subscribe(mResponseObserver);
+        }
+    }
+
     @Override
     public void initRvView() {
         mRecyclerView = mView.findViewById(R.id.rv_common);
@@ -115,6 +136,9 @@ public abstract class RootRvFragment<T> extends RootRefreshFragment implements I
         });
         mAdapter.setEmptyView(mEmptyView);//设置加载失败或空数据View
         mAdapter.isUseEmpty(false);//初次不显示加载失败布局或空数据布局
+
+        mRequestObservable = getRequestObservable();
+        mResponseObserver = getResponseObserver();
     }
 
     @Override
@@ -158,6 +182,17 @@ public abstract class RootRvFragment<T> extends RootRefreshFragment implements I
                 }
             }
         }
+    }
+
+    @Override
+    public void showLoadSuccessView(int totalSize, List<T> data) {
+        mTotalSize = totalSize;
+        showLoadCompleteView(LoadCompleteType.SUCCESS, data);
+    }
+
+    @Override
+    public void showLoadErrorView() {
+        showLoadCompleteView(LoadCompleteType.ERROR, null);
     }
 
     @Override
