@@ -1,7 +1,15 @@
 <application>
   <component name="AppStorage">
     <histories>
+      <item value="set Notch" />
       <item value="套餐" />
     </histories>
+  </component>
+  <component name="Settings">
+    <option name="googleTranslateSettings">
+      <google-translate>
+        <option name="useTranslateGoogleCom" value="true" />
+      </google-translate>
+    </option>
   </component>
 </application>
