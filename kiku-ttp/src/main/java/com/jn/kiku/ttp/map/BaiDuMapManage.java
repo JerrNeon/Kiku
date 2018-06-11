@@ -1,6 +1,7 @@
 package com.jn.kiku.ttp.map;
 
 import android.content.Context;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -11,10 +12,19 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.Polyline;
+import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.BikingRouteLine;
 import com.baidu.mapapi.search.route.BikingRoutePlanOption;
@@ -51,9 +61,9 @@ import java.util.List;
  * @create by: chenwei
  * @date 2017/3/13 13:27
  */
-public class BaiduMapManage implements ILogToastView {
+public class BaiDuMapManage implements ILogToastView {
 
-    private static BaiduMapManage instance = null;
+    private static BaiDuMapManage instance = null;
 
     private LocationClient mLocationClient = null;//定位关键类
     private BDLocationListener myListener = null;//定位监听
@@ -63,19 +73,22 @@ public class BaiduMapManage implements ILogToastView {
     private LocationResultListener mLoctionResultListener = null;
     private RouteSearchResultListener mRouteSearchResultListener = null;
 
-    private BaiduMapManage() {
+    private BaiDuMapManage() {
     }
 
-    public static synchronized BaiduMapManage getInstance() {
+    public static synchronized BaiDuMapManage getInstance() {
         if (instance == null)
-            instance = new BaiduMapManage();
+            instance = new BaiDuMapManage();
         return instance;
     }
 
     /**
      * 初始化定位相关类和参数
+     *
+     * @param context      Context
+     * @param scanSpanTime 定位间隔时间点，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
      */
-    private void initLoc(Context context) {
+    private void initLoc(Context context, int scanSpanTime) {
         mLocationClient = new LocationClient(context.getApplicationContext());
         myListener = new MyLocationListener();
         mLocationClient.registerLocationListener(myListener);
@@ -113,9 +126,30 @@ public class BaiduMapManage implements ILogToastView {
      * @param listener 定位结果
      */
     public void startLoc(Context context, @NonNull LocationResultListener listener) {
-        initLoc(context);
+        initLoc(context, 0);
         mLoctionResultListener = listener;
         mLocationClient.start();
+    }
+
+    /**
+     * 开始定位
+     *
+     * @param context      Context
+     * @param scanSpanTime 定位间隔时间点，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+     * @param listener     定位结果
+     */
+    public void startLoc(Context context, int scanSpanTime, @NonNull LocationResultListener listener) {
+        initLoc(context, scanSpanTime);
+        mLoctionResultListener = listener;
+        mLocationClient.start();
+    }
+
+    /**
+     * 停止定位
+     */
+    public void stopLoc() {
+        if (mLocationClient != null)
+            mLocationClient.stop();
     }
 
     /**
@@ -148,6 +182,48 @@ public class BaiduMapManage implements ILogToastView {
     }
 
     /**
+     * 更新地图状态
+     *
+     * @param baiduMap BaiduMap
+     * @param points   地图点集合
+     */
+    public void animateMapStatus(@NonNull BaiduMap baiduMap, List<LatLng> points) {
+        if (null == points || points.isEmpty()) {
+            return;
+        }
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (LatLng point : points) {
+            builder.include(point);
+        }
+        MapStatusUpdate msUpdate = MapStatusUpdateFactory.newLatLngBounds(builder.build());
+        baiduMap.animateMapStatus(msUpdate);
+    }
+
+    /**
+     * 更新地图状态
+     *
+     * @param baiduMap BaiduMap
+     * @param point    地图点
+     * @param zoom     级别
+     */
+    public void animateMapStatus(@NonNull BaiduMap baiduMap, LatLng point, float zoom) {
+        MapStatus.Builder builder = new MapStatus.Builder();
+        MapStatus mapStatus = builder.target(point).zoom(zoom).build();
+        baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(mapStatus));
+    }
+
+    /**
+     * 刷新地图
+     *
+     * @param baiduMap BaiduMap
+     */
+    public void refresh(@NonNull BaiduMap baiduMap) {
+        LatLng mapCenter = baiduMap.getMapStatus().target;
+        float mapZoom = baiduMap.getMapStatus().zoom - 1.0f;
+        animateMapStatus(baiduMap, mapCenter, mapZoom);
+    }
+
+    /**
      * 获取两个位置之间的距离
      *
      * @param from 开始位置
@@ -156,6 +232,40 @@ public class BaiduMapManage implements ILogToastView {
      */
     public double getDistance(@NonNull LatLng from, @NonNull LatLng to) {
         return DistanceUtil.getDistance(from, to);
+    }
+
+    /**
+     * 添加点标记
+     *
+     * @param baiduMap      BaiduMap
+     * @param latLng        标记的点
+     * @param imgResourceId 对应点显示的图标
+     */
+    public void addMarker(BaiduMap baiduMap, LatLng latLng, @DrawableRes int imgResourceId) {
+        //构建Marker图标
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(imgResourceId);
+        //构建MarkerOption，用于在地图上添加Marker
+        OverlayOptions option = new MarkerOptions()
+                .position(latLng)
+                .icon(bitmap);
+        //在地图上添加Marker，并显示
+        baiduMap.addOverlay(option);
+
+    }
+
+    /**
+     * 绘制折线
+     *
+     * @param baiduMap BaiduMap
+     * @param latLngs  点集合
+     */
+    public void addOverlay(BaiduMap baiduMap, List<LatLng> latLngs) {
+        OverlayOptions overlayOptions = new PolylineOptions()
+                .width(20)
+                .color(0xAA13C768)
+                .points(latLngs);
+        Polyline polyline = (Polyline) baiduMap.addOverlay(overlayOptions);
+        polyline.setZIndex(3);
     }
 
     /**
