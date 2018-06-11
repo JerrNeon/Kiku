@@ -241,12 +241,35 @@ public class IntentUtils {
         //判断是否是AndroidN以及更高的版本
         Uri apkUri = UriUtils.getUri(mContext.getApplicationContext(), apkPath);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+            //区别于 FLAG_GRANT_READ_URI_PERMISSION 跟 FLAG_GRANT_WRITE_URI_PERMISSION， URI权限会持久存在即使重启，直到明确的用 revokeUriPermission(Uri, int) 撤销。
+            // 这个flag只提供可能持久授权。但是接收的应用必须调用ContentResolver的takePersistableUriPermission(Uri, int)方法实现
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
         } else {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
         mContext.startActivity(intent);
+    }
+
+    /**
+     * 安装
+     *
+     * @param mContext 接收外部传进来的context
+     */
+    public static Intent getInstallIntent(Context mContext, String apkPath) {
+        // 核心是下面几句代码
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        //判断是否是AndroidN以及更高的版本
+        Uri apkUri = UriUtils.getUri(mContext.getApplicationContext(), apkPath);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            //区别于 FLAG_GRANT_READ_URI_PERMISSION 跟 FLAG_GRANT_WRITE_URI_PERMISSION， URI权限会持久存在即使重启，直到明确的用 revokeUriPermission(Uri, int) 撤销。
+            // 这个flag只提供可能持久授权。但是接收的应用必须调用ContentResolver的takePersistableUriPermission(Uri, int)方法实现
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+        } else {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        return intent;
     }
 
     /**

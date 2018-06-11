@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -19,7 +18,6 @@ import com.jn.kiku.utils.FileIOUtils;
 import com.jn.kiku.utils.FileTypeUtils;
 import com.jn.kiku.utils.ImageUtil;
 import com.jn.kiku.utils.IntentUtils;
-import com.jn.kiku.utils.UriUtils;
 
 import java.io.File;
 
@@ -66,7 +64,7 @@ public class VersionUpdateService extends Service {
         builder.setSmallIcon(versionUpdateVO.getAppIconResId());
         builder.setContentTitle(versionUpdateVO.getAppName());
         builder.setTicker(getResources().getString(R.string.versionUpdate_downloadStart));
-        final String downLoadFileName = versionUpdateVO.getAppName() + System.currentTimeMillis();
+        final String downLoadFileName = versionUpdateVO.getAppName();
         RetrofitManage.getInstance()
                 .getDownloadObservable(versionUpdateVO.getDownLoadUrl(), new ProgressListener() {
                     @Override
@@ -87,7 +85,8 @@ public class VersionUpdateService extends Service {
 
                     @Override
                     public String apply(ResponseBody responseBody) throws Exception {
-                        String fileSuffix = FileTypeUtils.getFileSuffix(responseBody.contentType().toString());//文件后缀名
+                        String mimeType = responseBody.contentType().type() + File.separator + responseBody.contentType().subtype();
+                        String fileSuffix = FileTypeUtils.getFileSuffix(mimeType);//文件后缀名
                         String filePath = ImageUtil.getFileCacheFile().getAbsolutePath() + File.separator + downLoadFileName + "." + fileSuffix;
                         FileIOUtils.writeFileFromIS(filePath, responseBody.byteStream());
                         return filePath;
@@ -109,11 +108,8 @@ public class VersionUpdateService extends Service {
 
                     @Override
                     public void onNext(String filePath) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        Uri uri = UriUtils.getUri(getApplicationContext(), filePath);
-                        //设置intent的类型
-                        intent.setDataAndType(uri, "application/vnd.android.package-archive");
-                        PendingIntent pendingIntent = PendingIntent.getActivity(VersionUpdateService.this, 0, intent, 0);
+                        Intent intent = IntentUtils.getInstallIntent(VersionUpdateService.this, filePath);
+                        PendingIntent pendingIntent = PendingIntent.getActivity(VersionUpdateService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                         builder.setContentIntent(pendingIntent);
                         builder.setAutoCancel(true);//设置点击后消失
                         builder.setContentText(getResources().getString(R.string.versionUpdate_downloadComplete));
@@ -122,7 +118,7 @@ public class VersionUpdateService extends Service {
                         Intent broadcastIntent = new Intent(VersionUpdateReceiver.VERSION_UPDATE_ACTION);
                         broadcastIntent.putExtra(VersionUpdateReceiver.VERSION_UPDATE_ACTION, getResources().getString(R.string.versionUpdate_downloadComplete));
                         sendBroadcast(broadcastIntent);
-                        IntentUtils.install(VersionUpdateService.this, filePath);
+                        startActivity(intent);
                         stopSelf();
                     }
 

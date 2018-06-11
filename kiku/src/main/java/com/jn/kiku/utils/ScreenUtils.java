@@ -55,7 +55,6 @@ public class ScreenUtils {
      * @return
      */
     public static int getStatusHeight(Context context) {
-
         int statusHeight = -1;
         try {
             Class<?> clazz = Class.forName("com.android.internal.R$dimen");
@@ -67,6 +66,21 @@ public class ScreenUtils {
             e.printStackTrace();
         }
         return statusHeight;
+    }
+
+    /**
+     * 获取状态栏的高度
+     *
+     * @param context
+     * @return
+     */
+    public static int getStatusBarHeight(Context context) {
+        int statusBarHeight = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return statusBarHeight;
     }
 
     /**

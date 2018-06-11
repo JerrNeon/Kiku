@@ -29,8 +29,6 @@ public class BaseApplication extends RootApplication {
         instance = this;
         initActivityManager();
         initRetrofit(ApiService.BASE_URL);
-        initLogUtils(BuildConfig.APPLICATION_ID);
-        initImageUtils();
-        initUriUtils();
+        initUtilsManager(BuildConfig.APPLICATION_ID);
     }
 }

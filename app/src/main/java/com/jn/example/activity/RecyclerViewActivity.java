@@ -6,19 +6,16 @@ import android.support.v7.widget.RecyclerView;
 import com.jn.example.adapter.NewsAdapter;
 import com.jn.example.entiy.NewsListVO;
 import com.jn.example.entiy.NewsVO;
-import com.jn.example.entiy.XaResult;
 import com.jn.example.request.ApiService;
 import com.jn.example.request.BaseResponseObserver;
 import com.jn.kiku.activity.RootRvActivity;
 import com.jn.kiku.adapter.BaseRvAdapter;
-import com.jn.kiku.annonation.LoadCompleteType;
 import com.jn.kiku.annonation.PermissionType;
 import com.jn.kiku.retrofit.RetrofitManage;
-import com.trello.rxlifecycle2.android.ActivityEvent;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 public class RecyclerViewActivity extends RootRvActivity<NewsVO> {
 
@@ -33,6 +30,29 @@ public class RecyclerViewActivity extends RootRvActivity<NewsVO> {
     }
 
     @Override
+    public Observable getRequestObservable() {
+        return RetrofitManage.getInstance()
+                .create(ApiService.class)
+                .getVideoList(mPageIndex, mPageSize);
+    }
+
+    @Override
+    public Observer getResponseObserver() {
+        return new BaseResponseObserver<NewsListVO>(this) {
+            @Override
+            public void onSuccess(NewsListVO newsListVO) {
+                showLoadSuccessView(newsListVO.getPage().getTotal(), newsListVO.getList());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                showLoadErrorView();
+            }
+        };
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitleText("首页");
@@ -44,27 +64,4 @@ public class RecyclerViewActivity extends RootRvActivity<NewsVO> {
         });
     }
 
-    @Override
-    public void sendRequest() {
-        super.sendRequest();
-        RetrofitManage.getInstance()
-                .create(ApiService.class)
-                .getVideoList(mPageIndex, mPageSize)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(this.<XaResult<NewsListVO>>bindUntilEvent(ActivityEvent.DESTROY))
-                .subscribe(new BaseResponseObserver<NewsListVO>(this) {
-                    @Override
-                    public void onSuccess(NewsListVO newsListVO) {
-                        mTotalSize = newsListVO.getPage().getTotal();
-                        showLoadCompleteView(LoadCompleteType.SUCCESS, newsListVO.getList());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
-                        showLoadCompleteView(LoadCompleteType.ERROR, null);
-                    }
-                });
-    }
 }

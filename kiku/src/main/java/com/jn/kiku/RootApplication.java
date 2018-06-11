@@ -4,26 +4,12 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
-import com.baidu.mapapi.SDKInitializer;
 import com.jn.kiku.common.exception.CrashHandler;
 import com.jn.kiku.retrofit.RetrofitManage;
-import com.jn.kiku.ttp.TtpConstants;
-import com.jn.kiku.ttp.analysis.BaiduMobManage;
-import com.jn.kiku.ttp.analysis.UMManage;
-import com.jn.kiku.ttp.analysis.ZhugeManage;
-import com.jn.kiku.ttp.bug.BugtagsManage;
-import com.jn.kiku.ttp.pay.pingpp.PingPpManage;
-import com.jn.kiku.utils.ImageUtil;
-import com.jn.kiku.utils.LogUtils;
-import com.jn.kiku.utils.UriUtils;
+import com.jn.kiku.utils.WebViewUtils;
 import com.jn.kiku.utils.manager.ActivityManager;
 import com.jn.kiku.utils.manager.GlideManage;
-import com.sina.weibo.sdk.WbSdk;
-import com.sina.weibo.sdk.auth.AuthInfo;
-import com.tencent.smtt.sdk.QbSdk;
-import com.tencent.smtt.sdk.TbsListener;
-
-import cn.jpush.android.api.JPushInterface;
+import com.jn.kiku.utils.manager.UtilsManager;
 
 /**
  * @version V2.0
@@ -115,35 +101,20 @@ public abstract class RootApplication extends Application {
     }
 
     /**
-     * 初始化Log
+     * 初始化工具类的一些相关信息
      *
      * @param tagName Tag名称
      */
-    protected void initLogUtils(String tagName) {
-        LogUtils.init(LOG_DEBUG, tagName);
+    protected void initUtilsManager(String tagName) {
+        UtilsManager.initLogUtils(LOG_DEBUG, tagName);
+        UtilsManager.initImageUtils(this);
+        UtilsManager.initUriUtils(getPackageName());
     }
 
     /**
-     * 初始化ImageUtils
+     * 初始化第三方平台一些相关信息
      */
-    protected void initImageUtils() {
-        ImageUtil.init(this);
-    }
-
-    /**
-     * 初始化UriUtils
-     */
-    protected void initUriUtils() {
-        UriUtils.init(getPackageName());
-    }
-
-    /**
-     * 初始化第三方平台key和secret
-     * <p>
-     * TTpConstants.Builder类设置
-     * </P>
-     */
-    protected void initTTpConstants() {
+    protected void initTTpManager() {
 
     }
 
@@ -156,103 +127,10 @@ public abstract class RootApplication extends Application {
     }
 
     /**
-     * 初始化百度地图SDK
-     */
-    private void initBaiduMap() {
-        SDKInitializer.initialize(this);
-    }
-
-    /**
-     * 初始化极光推送SDK
-     */
-    private void initJpush() {
-        JPushInterface.setDebugMode(LOG_DEBUG);
-        JPushInterface.init(this);
-    }
-
-    /**
-     * 诸葛IO,用于统计数据
-     */
-    private void initZhuGeIo(String url) {
-        ZhugeManage.getInstance().setUploadURL(url);
-        if (LOG_DEBUG) {
-            ZhugeManage.getInstance().openDebug();
-            ZhugeManage.getInstance().openLog();
-        }
-    }
-
-    /**
      * 搜集本地tbs内核信息并上报服务器，服务器返回结果决定使用哪个内核。
      */
     private void initTencentWebView() {
-        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
-
-            @Override
-            public void onViewInitFinished(boolean arg0) {
-                LogUtils.i("TencentWebView: onViewInitFinished is " + arg0);
-            }
-
-            @Override
-            public void onCoreInitFinished() {
-            }
-        };
-
-        QbSdk.setTbsListener(new TbsListener() {
-            @Override
-            public void onDownloadFinish(int i) {
-                LogUtils.i("TencentWebView: onDownloadFinish");
-            }
-
-            @Override
-            public void onInstallFinish(int i) {
-                LogUtils.i("TencentWebView: onInstallFinish");
-            }
-
-            @Override
-            public void onDownloadProgress(int i) {
-                LogUtils.i("TencentWebView: onDownloadProgress:" + i);
-            }
-        });
-        QbSdk.initX5Environment(getApplicationContext(), cb);
-    }
-
-    /**
-     * 初始化新浪微博SDK
-     * <p>
-     * 使用这个方法之前请先初始化initTTppConstants
-     * </p>
-     */
-    private void initSina() {
-        WbSdk.install(this, new AuthInfo(this, TtpConstants.SINA_APP_KEY, TtpConstants.SINA_REDIRECT_URL, TtpConstants.SINA_SCOPE));
-    }
-
-    /**
-     * 初始化Ping++
-     * debug开启日志信息，release关闭日志信息
-     */
-    private void initPingPp() {
-        PingPpManage.getInstance().setDebugEnable(LOG_DEBUG);
-    }
-
-    /**
-     * 初始化百度统计
-     */
-    private void initBaiduMob() {
-        BaiduMobManage.getInstance().setDebugOn(LOG_DEBUG);
-    }
-
-    /**
-     * 初始化Bugtags
-     */
-    private void initBugtags() {
-        BugtagsManage.getInstance().init(this);
-    }
-
-    /**
-     * 初始化友盟统计
-     */
-    private void initUM() {
-        UMManage.getInstance().init(this, LOG_DEBUG);
+        WebViewUtils.initX5Environment(getApplicationContext());
     }
 
     /**
