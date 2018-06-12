@@ -45,6 +45,7 @@ import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.jn.kiku.ttp.common.ILogToastView;
+import com.jn.kiku.ttp.map.callback.BDLocationListenerIml;
 import com.jn.kiku.ttp.map.callback.LocationResultListener;
 import com.jn.kiku.ttp.map.callback.RouteSearchResultListener;
 import com.jn.kiku.ttp.map.overlayutil.BikingRouteOverlay;
@@ -66,11 +67,9 @@ public class BaiDuMapManage implements ILogToastView {
     private static BaiDuMapManage instance = null;
 
     private LocationClient mLocationClient = null;//定位关键类
-    private BDLocationListener myListener = null;//定位监听
-    private LocationClientOption mOption = null;//定位参数
+    private LocationClient mServiceLocationClient = null;//定位关键类
     private RoutePlanSearch pSearch = null;//搜索关键类
 
-    private LocationResultListener mLoctionResultListener = null;
     private RouteSearchResultListener mRouteSearchResultListener = null;
 
     private BaiDuMapManage() {
@@ -85,38 +84,84 @@ public class BaiDuMapManage implements ILogToastView {
     /**
      * 初始化定位相关类和参数
      *
-     * @param context      Context
-     * @param scanSpanTime 定位间隔时间点，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+     * @param context Context
      */
-    private void initLoc(Context context, int scanSpanTime) {
-        mLocationClient = new LocationClient(context.getApplicationContext());
-        myListener = new MyLocationListener();
-        mLocationClient.registerLocationListener(myListener);
+    private void initLoc(Context context, final LocationResultListener listener) {
+        if (mLocationClient == null)
+            mLocationClient = new LocationClient(context);
+        final BDLocationListenerIml mBDLocationListener = new BDLocationListenerIml();
+        mBDLocationListener.setLocationResultListener(new LocationResultListener() {
+            @Override
+            public void onSuccess(BDLocation location) {
+                if (listener != null)
+                    listener.onSuccess(location);
+                if (mLocationClient != null)
+                    mLocationClient.unRegisterLocationListener(mBDLocationListener);
+            }
 
-        mOption = new LocationClientOption();
-        mOption.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
-        //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
-        mOption.setCoorType("bd09ll");
-        //可选，默认gcj02，设置返回的定位结果坐标系
-        mOption.setScanSpan(0);
-        //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
-        mOption.setIsNeedAddress(true);
-        //可选，设置是否需要地址信息，默认不需要
-        mOption.setOpenGps(true);
-        //可选，默认false,设置是否使用gps
-        mOption.setLocationNotify(true);
-        //可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
-        mOption.setIsNeedLocationDescribe(true);
-        //可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
-        mOption.setIsNeedLocationPoiList(true);
-        //可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
-        mOption.setIgnoreKillProcess(false);
-        //可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
-        mOption.SetIgnoreCacheException(false);
-        //可选，默认false，设置是否收集CRASH信息，默认收集
-        mOption.setEnableSimulateGps(false);
-        //可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
+            @Override
+            public void onFailure(BDLocation location) {
+                if (listener != null)
+                    listener.onFailure(location);
+                if (mLocationClient != null)
+                    mLocationClient.unRegisterLocationListener(mBDLocationListener);
+            }
+        });
+        mLocationClient.registerLocationListener(mBDLocationListener);
+        //定位参数
+        LocationClientOption mOption = getLocationClientOption(0);
         mLocationClient.setLocOption(mOption);
+    }
+
+    /**
+     * 初始化定位相关类和参数
+     *
+     * @param context
+     * @param scanSpanTime
+     * @param listener
+     */
+    private void initLoc(Context context, final int scanSpanTime, final LocationResultListener listener) {
+        if (mServiceLocationClient == null)
+            mServiceLocationClient = new LocationClient(context);
+        final BDLocationListenerIml mBDLocationListener = new BDLocationListenerIml();
+        mBDLocationListener.setLocationResultListener(listener);
+        mServiceLocationClient.registerLocationListener(mBDLocationListener);
+        //定位参数
+        LocationClientOption mOption = getLocationClientOption(scanSpanTime);
+        mServiceLocationClient.setLocOption(mOption);
+    }
+
+    /**
+     * 获取定位参数
+     *
+     * @param scanSpanTime 设置发起定位请求的间隔，需要大于等于1000ms才是有效的
+     * @return LocationClientOption
+     */
+    private LocationClientOption getLocationClientOption(int scanSpanTime) {
+        LocationClientOption mOption = new LocationClientOption();
+        //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+        mOption.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        //可选，默认gcj02，设置返回的定位结果坐标系
+        mOption.setCoorType("bd09ll");
+        //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        mOption.setScanSpan(scanSpanTime);
+        //可选，设置是否需要地址信息，默认不需要
+        mOption.setIsNeedAddress(true);
+        //可选，默认false,设置是否使用gps
+        mOption.setOpenGps(true);
+        //可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
+        mOption.setLocationNotify(true);
+        //可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
+        mOption.setIsNeedLocationDescribe(true);
+        //可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+        mOption.setIsNeedLocationPoiList(true);
+        //可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
+        mOption.setIgnoreKillProcess(false);
+        //可选，默认false，设置是否收集CRASH信息，默认收集
+        mOption.SetIgnoreCacheException(false);
+        //可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
+        mOption.setEnableSimulateGps(false);
+        return mOption;
     }
 
     /**
@@ -126,9 +171,8 @@ public class BaiDuMapManage implements ILogToastView {
      * @param listener 定位结果
      */
     public void startLoc(Context context, @NonNull LocationResultListener listener) {
-        initLoc(context, 0);
-        mLoctionResultListener = listener;
-        mLocationClient.start();
+        initLoc(context, listener);
+        startLoc();
     }
 
     /**
@@ -139,9 +183,16 @@ public class BaiDuMapManage implements ILogToastView {
      * @param listener     定位结果
      */
     public void startLoc(Context context, int scanSpanTime, @NonNull LocationResultListener listener) {
-        initLoc(context, scanSpanTime);
-        mLoctionResultListener = listener;
-        mLocationClient.start();
+        initLoc(context, scanSpanTime, listener);
+        startServiceLoc();
+    }
+
+    /**
+     * 开始定位
+     */
+    private void startLoc() {
+        if (mLocationClient != null)
+            mLocationClient.start();
     }
 
     /**
@@ -150,6 +201,22 @@ public class BaiDuMapManage implements ILogToastView {
     public void stopLoc() {
         if (mLocationClient != null)
             mLocationClient.stop();
+    }
+
+    /**
+     * 开始定位
+     */
+    private void startServiceLoc() {
+        if (mServiceLocationClient != null)
+            mServiceLocationClient.start();
+    }
+
+    /**
+     * 停止定位
+     */
+    public void stopServiceLoc() {
+        if (mServiceLocationClient != null)
+            mServiceLocationClient.stop();
     }
 
     /**
@@ -242,14 +309,16 @@ public class BaiDuMapManage implements ILogToastView {
      * @param imgResourceId 对应点显示的图标
      */
     public void addMarker(BaiduMap baiduMap, LatLng latLng, @DrawableRes int imgResourceId) {
-        //构建Marker图标
-        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(imgResourceId);
-        //构建MarkerOption，用于在地图上添加Marker
-        OverlayOptions option = new MarkerOptions()
-                .position(latLng)
-                .icon(bitmap);
-        //在地图上添加Marker，并显示
-        baiduMap.addOverlay(option);
+        if (latLng != null) {
+            //构建Marker图标
+            BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(imgResourceId);
+            //构建MarkerOption，用于在地图上添加Marker
+            OverlayOptions option = new MarkerOptions()
+                    .position(latLng)
+                    .icon(bitmap);
+            //在地图上添加Marker，并显示
+            baiduMap.addOverlay(option);
+        }
 
     }
 
@@ -260,12 +329,14 @@ public class BaiDuMapManage implements ILogToastView {
      * @param latLngs  点集合
      */
     public void addOverlay(BaiduMap baiduMap, List<LatLng> latLngs) {
-        OverlayOptions overlayOptions = new PolylineOptions()
-                .width(20)
-                .color(0xAA13C768)
-                .points(latLngs);
-        Polyline polyline = (Polyline) baiduMap.addOverlay(overlayOptions);
-        polyline.setZIndex(3);
+        if (latLngs != null && latLngs.size() >= 2) {
+            OverlayOptions overlayOptions = new PolylineOptions()
+                    .width(20)
+                    .color(0xAA13C768)
+                    .points(latLngs);
+            Polyline polyline = (Polyline) baiduMap.addOverlay(overlayOptions);
+            polyline.setZIndex(3);
+        }
     }
 
     /**
@@ -419,119 +490,6 @@ public class BaiDuMapManage implements ILogToastView {
         overlay.zoomToSpan();
     }
 
-    private class MyLocationListener implements BDLocationListener {
-
-        @Override
-        public void onReceiveLocation(BDLocation location) {
-            //获取定位结果
-            StringBuffer sb = new StringBuffer(256);
-
-            sb.append("time : ");
-            sb.append(location.getTime());    //获取定位时间
-
-            sb.append("\nerror code : ");
-            sb.append(location.getLocType());    //获取类型类型
-
-            sb.append("\nlatitude : ");
-            sb.append(location.getLatitude());    //获取纬度信息
-
-            sb.append("\nlontitude : ");
-            sb.append(location.getLongitude());    //获取经度信息
-
-            sb.append("\nradius : ");
-            sb.append(location.getRadius());    //获取定位精准度
-
-            if (location.getLocType() == BDLocation.TypeGpsLocation) {
-
-                // GPS定位结果
-                sb.append("\nspeed : ");
-                sb.append(location.getSpeed());    // 单位：公里每小时
-
-                sb.append("\nsatellite : ");
-                sb.append(location.getSatelliteNumber());    //获取卫星数
-
-                sb.append("\nheight : ");
-                sb.append(location.getAltitude());    //获取海拔高度信息，单位米
-
-                sb.append("\ndirection : ");
-                sb.append(location.getDirection());    //获取方向信息，单位度
-
-                sb.append("\naddr : ");
-                sb.append(location.getAddrStr());    //获取地址信息
-
-                sb.append("\ndescribe : ");
-                sb.append("gps定位成功");
-
-                if (mLoctionResultListener != null) {
-                    mLoctionResultListener.onSuccess(location);
-                }
-            } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
-
-                // 网络定位结果
-                sb.append("\naddr : ");
-                sb.append(location.getAddrStr());    //获取地址信息
-
-                sb.append("\noperationers : ");
-                sb.append(location.getOperators());    //获取运营商信息
-
-                sb.append("\ndescribe : ");
-                sb.append("网络定位成功");
-                if (mLoctionResultListener != null) {
-                    mLoctionResultListener.onSuccess(location);
-                }
-            } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {
-
-                // 离线定位结果
-                sb.append("\ndescribe : ");
-                sb.append("离线定位成功，离线定位结果也是有效的");
-
-                if (mLoctionResultListener != null) {
-                    mLoctionResultListener.onSuccess(location);
-                }
-            } else if (location.getLocType() == BDLocation.TypeServerError) {
-
-                sb.append("\ndescribe : ");
-                sb.append("服务端网络定位失败，可以反馈IMEI号和大体定位时间到loc-bugs@baidu.com，会有人追查原因");
-
-                if (mLoctionResultListener != null)
-                    mLoctionResultListener.onFailure(location);
-            } else if (location.getLocType() == BDLocation.TypeNetWorkException) {
-
-                sb.append("\ndescribe : ");
-                sb.append("网络不同导致定位失败，请检查网络是否通畅");
-
-                if (mLoctionResultListener != null)
-                    mLoctionResultListener.onFailure(location);
-            } else if (location.getLocType() == BDLocation.TypeCriteriaException) {
-
-                sb.append("\ndescribe : ");
-                sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
-
-                if (mLoctionResultListener != null)
-                    mLoctionResultListener.onFailure(location);
-            }
-
-            sb.append("\nlocationdescribe : ");
-            sb.append(location.getLocationDescribe());    //位置语义化信息
-
-            List<Poi> list = location.getPoiList();    // POI数据
-            if (list != null) {
-                sb.append("\npoilist size = : ");
-                sb.append(list.size());
-                for (Poi p : list) {
-                    sb.append("\npoi= : ");
-                    sb.append(p.getId() + " " + p.getName() + " " + p.getRank());
-                }
-            }
-            logI(sb.toString());
-        }
-
-        @Override
-        public void onConnectHotSpotMessage(String s, int i) {
-
-        }
-    }
-
     private class MyOnGetRoutePlanResultListener implements OnGetRoutePlanResultListener {
 
         @Override
@@ -660,16 +618,19 @@ public class BaiDuMapManage implements ILogToastView {
     public void onDestroy() {
         if (mLocationClient != null)
             mLocationClient = null;
-        if (myListener != null)
-            myListener = null;
-        if (mOption != null)
-            mOption = null;
-        if (pSearch != null)
+        if (pSearch != null) {
             pSearch.destroy();
-        if (mLoctionResultListener != null)
-            mLoctionResultListener = null;
-        if (mRouteSearchResultListener != null)
-            mRouteSearchResultListener = null;
+            pSearch = null;
+        }
+    }
+
+    public void onDestroyService() {
+        if (mServiceLocationClient != null)
+            mServiceLocationClient = null;
+        if (pSearch != null) {
+            pSearch.destroy();
+            pSearch = null;
+        }
     }
 
     @Override
