@@ -1,5 +1,8 @@
 package com.jn.example;
 
+import android.content.Context;
+import android.support.multidex.MultiDex;
+
 import com.jn.example.request.ApiService;
 import com.jn.kiku.RootApplication;
 
@@ -30,5 +33,11 @@ public class BaseApplication extends RootApplication {
         initActivityManager();
         initRetrofit(ApiService.BASE_URL);
         initUtilsManager(BuildConfig.APPLICATION_ID);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);//突破65536个方法数
     }
 }
