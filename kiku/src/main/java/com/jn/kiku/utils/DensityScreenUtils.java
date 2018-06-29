@@ -24,7 +24,7 @@ public class DensityScreenUtils {
     private static float sNonCompatDensity;
     private static float sNonCompatScaledDensity;
 
-    public static void setCustomDensity(@NonNull Activity activity, @NonNull final Application application, float screenWidthDp) {
+    public static void setDensity(@NonNull Activity activity, @NonNull final Application application, float screenWidthDp) {
         final DisplayMetrics appDisplayMetrics = application.getResources().getDisplayMetrics();
 
         if (sNonCompatDensity == 0) {

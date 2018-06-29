@@ -2,6 +2,7 @@ package com.jn.kiku.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -11,7 +12,7 @@ import java.lang.reflect.Field;
 /**
  * 打开或关闭软键盘
  */
-public class KeyBoardUtils {
+public class SoftKeyBoardUtils {
     /**
      * 打卡软键盘
      *
@@ -88,4 +89,40 @@ public class KeyBoardUtils {
             }
         }
     }
+
+    /**
+     * Return whether soft input is visible.
+     * <p>The minimum height is 200</p>
+     *
+     * @param activity The activity.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isSoftInputVisible(final Activity activity) {
+        return isSoftInputVisible(activity, 200);
+    }
+
+    /**
+     * Return whether soft input is visible.
+     *
+     * @param activity             The activity.
+     * @param minHeightOfSoftInput The minimum height of soft input.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isSoftInputVisible(final Activity activity, final int minHeightOfSoftInput) {
+        return getContentViewInvisibleHeight(activity) >= minHeightOfSoftInput;
+    }
+
+    /**
+     * 获取窗口可视区域大小
+     *
+     * @param activity Activity
+     * @return
+     */
+    public static int getContentViewInvisibleHeight(final Activity activity) {
+        final View contentView = activity.findViewById(android.R.id.content);
+        final Rect outRect = new Rect();
+        contentView.getWindowVisibleDisplayFrame(outRect);
+        return contentView.getBottom() - outRect.bottom;
+    }
+
 }
