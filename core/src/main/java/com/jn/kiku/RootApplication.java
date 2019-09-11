@@ -2,8 +2,9 @@ package com.jn.kiku;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.DrawableRes;
-import android.support.multidex.MultiDex;
+
+import androidx.annotation.DrawableRes;
+import androidx.multidex.MultiDex;
 
 import com.jn.kiku.common.exception.CrashHandler;
 import com.jn.kiku.net.RetrofitManage;

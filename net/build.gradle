@@ -41,9 +41,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    testImplementation 'junit:junit:4.12'
+    testImplementation dep["junit"]
+    androidTestImplementation dep["runner"]
+    androidTestImplementation dep["espresso-core"]
 
     implementation project(':common')
     api dep["retrofit"]

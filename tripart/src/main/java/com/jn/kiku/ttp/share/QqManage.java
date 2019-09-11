@@ -2,13 +2,13 @@ package com.jn.kiku.ttp.share;
 
 import android.app.Activity;
 import android.app.Application;
-import android.arch.lifecycle.DefaultLifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.jn.common.api.ILogToastView;
 import com.jn.common.util.ContextUtils;
@@ -106,37 +106,6 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
         mQqUserInfoResultListener = listener;
         mTencent.login(activity, mScope, new IUiListenerIml());
     }
-
-    /**
-     * 登录
-     *
-     * @param fragment fragment
-     * @param listener 结果监听
-     */
-    public void login(Fragment fragment, QqResultListener listener) {
-        init();
-        if (checkTencentAvailable())
-            return;
-        mQQType = LOGIN;
-        mQqResultListener = listener;
-        mTencent.login(fragment, mScope, new IUiListenerIml());
-    }
-
-    /**
-     * 登录
-     *
-     * @param fragment fragment
-     * @param listener 用户信息结果监听
-     */
-    public void login(Fragment fragment, QqUserInfoResultListener listener) {
-        init();
-        if (checkTencentAvailable())
-            return;
-        mQQType = LOGIN;
-        mQqUserInfoResultListener = listener;
-        mTencent.login(fragment, mScope, new IUiListenerIml());
-    }
-
 
     /**
      * 注销

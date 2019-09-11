@@ -1,27 +1,21 @@
 package com.jn.kiku.ttp.pay.pingpp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
+
+import androidx.fragment.app.Fragment;
 
 import com.jn.common.api.ILogToastView;
-import com.jn.common.util.ToastUtils;
 import com.pingplusplus.android.Pingpp;
 
 /**
- * @version V2.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (Ping + + 管理类)
- * @create by: chenwei
- * @date 2017/9/14 16:08
+ * Author：Stevie.Chen Time：2019/9/11
+ * Class Comment：Ping + + 管理类
  */
 public class PingPpManage implements ILogToastView {
 
     private static PingPpManage instance = null;
-    private Context mContext = null;
     private PingPpResultListener mPingPpResultListener = null;//支付结果回调
 
     private PingPpManage() {
@@ -40,7 +34,6 @@ public class PingPpManage implements ILogToastView {
      * @param data     表示获取到的charge或order的JSON字符串
      */
     public void pay(Activity activity, String data, PingPpResultListener listener) {
-        mContext = activity.getApplicationContext();
         mPingPpResultListener = listener;
         Pingpp.createPayment(activity, data);
     }
@@ -67,8 +60,6 @@ public class PingPpManage implements ILogToastView {
     /**
      * 支付回调
      *
-     * @param requestCode
-     * @param resultCode
      * @param data        <p>
      *                    pay_result ->处理返回值
      *                    "success" - 支付成功
@@ -82,7 +73,10 @@ public class PingPpManage implements ILogToastView {
         //支付页面返回处理
         if (requestCode == Pingpp.REQUEST_CODE_PAYMENT && resultCode == Activity.RESULT_OK) {
             Bundle bundle = data.getExtras();
-            String result = bundle.getString("pay_result");
+            String result = null;
+            if (bundle != null) {
+                result = bundle.getString("pay_result");
+            }
             if (result != null && !"".equals(result)) {
                 switch (result) {
                     case "success":
@@ -114,29 +108,11 @@ public class PingPpManage implements ILogToastView {
                         break;
                 }
             }
-            String errorMsg = bundle.getString("error_msg"); // 错误信息
-            String extraMsg = bundle.getString("extra_msg"); // 错误信息
+            if (bundle != null) {
+                String errorMsg = bundle.getString("error_msg"); // 错误信息
+                String extraMsg = bundle.getString("extra_msg"); // 错误信息
+            }
         }
-    }
-
-    @Override
-    public void logI(String message) {
-        Log.i(getClass().getSimpleName(), String.format(messageFormat, getClass().getSimpleName(), message));
-    }
-
-    @Override
-    public void logE(String message) {
-        Log.e(getClass().getSimpleName(), String.format(messageFormat, getClass().getSimpleName(), message));
-    }
-
-    @Override
-    public void showToast(String message) {
-        ToastUtils.showToast(message);
-    }
-
-    @Override
-    public void showToast(String message, int duration) {
-        ToastUtils.showToast(message, duration);
     }
 
     public void onDestroy() {

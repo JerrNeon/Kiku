@@ -1,7 +1,8 @@
 package com.jn.example;
 
 import android.content.Context;
-import android.support.multidex.MultiDex;
+
+import androidx.multidex.MultiDex;
 
 import com.jn.common.util.ContextUtils;
 import com.jn.example.request.ApiService;

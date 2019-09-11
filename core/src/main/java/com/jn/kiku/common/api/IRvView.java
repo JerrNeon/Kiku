@@ -1,9 +1,10 @@
 package com.jn.kiku.common.api;
 
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.StringRes;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.jn.kiku.adapter.BaseRvAdapter;
 import com.jn.kiku.annonation.LoadCompleteType;

@@ -2,12 +2,12 @@ package com.jn.kiku.ttp.share;
 
 import android.app.Activity;
 import android.app.Application;
-import android.arch.lifecycle.DefaultLifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.jn.common.api.ILogToastView;
 import com.jn.common.util.ContextUtils;

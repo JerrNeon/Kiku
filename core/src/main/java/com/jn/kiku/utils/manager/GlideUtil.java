@@ -5,10 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.support.v4.app.Fragment;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.widget.ImageView;
+
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.RequestBuilder;
@@ -16,23 +17,20 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 
 import static com.bumptech.glide.Glide.with;
 
 /**
- * @version V1.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (Glide工具类)
- * @create by: chenwei
- * @date 2016/10/9 11:14
+ * Author：Stevie.Chen Time：2019/8/29
+ * Class Comment：Glide工具类
  */
 public class GlideUtil {
 
     /**
-     * @param placeholderResourceId
-     * @param errorResourceId
+     * @param placeholderResourceId 占位符图片资源
+     * @param errorResourceId       加载失败图片资源
      * @return <p>
      * DiskCacheStrategy有五个常量：
      * DiskCacheStrategy.ALL 使用DATA和RESOURCE缓存远程数据，仅使用RESOURCE来缓存本地数据。
@@ -60,10 +58,9 @@ public class GlideUtil {
      * 获取图片请求管理对象
      *
      * @param context context资源对象
-     * @return
      */
     private static RequestManager getRequestManager(Object context) {
-        RequestManager requestManager = null;
+        RequestManager requestManager;
         if (context instanceof Activity) {
             requestManager = with((Activity) context);
         } else if (context instanceof Fragment) {
@@ -79,10 +76,9 @@ public class GlideUtil {
      * 获取资源对象
      *
      * @param context context资源对象
-     * @return
      */
     private static Resources getResources(Object context) {
-        Resources resources = null;
+        Resources resources;
         if (context instanceof Activity) {
             resources = ((Activity) context).getResources();
         } else if (context instanceof Fragment) {
@@ -117,7 +113,7 @@ public class GlideUtil {
      * @param target  监听图片加载结果
      */
     @SuppressWarnings("unchecked")
-    public static void displayImage(final Object context, final Object url, final SimpleTarget target) {
+    public static void displayImage(final Object context, final Object url, final CustomTarget target) {
         RequestManager requestManager = getRequestManager(context);
         requestManager.asBitmap().load(url).into(target);
     }
@@ -142,7 +138,6 @@ public class GlideUtil {
             requestManager.load(url).apply(requestOptions).into(imageView);
     }
 
-
     /**
      * 显示圆形图片
      *
@@ -151,10 +146,11 @@ public class GlideUtil {
      * @param imageView       imageview
      * @param errorResourceId 错误图片
      */
+    @SuppressWarnings("unchecked")
     public static void displayImageWithCircle(final Object context, final Object url, final ImageView imageView, final int placeholderResourceId, final int errorResourceId, final boolean isGif, final boolean isCache) {
         RequestOptions requestOptions = getRequestOptions(placeholderResourceId, errorResourceId, isCache);
         RequestManager requestManager = getRequestManager(context);
-        RequestBuilder requestBuilder = null;
+        RequestBuilder requestBuilder;
         if (isGif)
             requestBuilder = requestManager.asGif();
         else
@@ -183,7 +179,7 @@ public class GlideUtil {
     public static void displayImageWithRound(final Object context, final Object url, final ImageView imageView, final int placeholderResourceId, final int errorResourceId, final int radius, final boolean isGif, final boolean isCache) {
         RequestOptions requestOptions = getRequestOptions(placeholderResourceId, errorResourceId, isCache);
         RequestManager requestManager = getRequestManager(context);
-        RequestBuilder requestBuilder = null;
+        RequestBuilder requestBuilder;
         if (isGif)
             requestBuilder = requestManager.asGif();
         else

@@ -3,7 +3,7 @@ package com.jn.kiku.activity;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;

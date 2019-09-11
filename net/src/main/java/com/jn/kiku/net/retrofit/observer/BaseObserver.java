@@ -2,8 +2,8 @@ package com.jn.kiku.net.retrofit.observer;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.IntDef;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.IntDef;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.jn.common.util.ToastUtils;
 import com.jn.kiku.net.retrofit.exception.OkHttpErrorHelper;

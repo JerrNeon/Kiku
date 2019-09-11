@@ -28,7 +28,7 @@
 
         <!-- ======================解决 Android N 7.0 上 报错：android.os.FileUriExposedException begin============================ -->
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">

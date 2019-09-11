@@ -3,17 +3,15 @@ package com.jn.kiku.widget.recyclerview.decoration;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DimenRes;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import androidx.annotation.DimenRes;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 /**
- * @version V1.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (横向滑动时竖直分割线)
- * @create by: chenwei
- * @date 2018/5/21 10:26
+ * Author：Stevie.Chen Time：2019/8/29
+ * Class Comment：横向滑动时竖直分割线
  */
 public class VerticalDividerItemDecoration extends FlexibleDividerDecoration {
 

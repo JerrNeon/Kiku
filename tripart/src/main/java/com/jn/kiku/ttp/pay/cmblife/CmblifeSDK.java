@@ -76,8 +76,6 @@ public class CmblifeSDK {
 
     /**
      * 获取掌上生活SDK版本
-     *
-     * @return
      */
     public static String getVersion() {
         return SDK_VERSION;
@@ -85,9 +83,6 @@ public class CmblifeSDK {
 
     /**
      * 判断掌上生活是否安装
-     *
-     * @param context
-     * @return
      */
     public static boolean isInstall(Context context) {
         try {
@@ -102,8 +97,6 @@ public class CmblifeSDK {
 
     /**
      * 跳转至下载页面下载掌上生活
-     *
-     * @param context
      */
     public static void downloadCmblife(Context context) {
         startWebExplorer(context, URL_CMBLIFE_DOWNLOAD);
@@ -111,8 +104,6 @@ public class CmblifeSDK {
 
     /**
      * 重定向至浏览器
-     *
-     * @param context
      */
     private static void startRedirectPage(Context context, String protocol) {
         startWebExplorer(context, URL_CMBLIFE_REDIRECT + "?protocol=" + URLEncoder.encode(protocol));
@@ -120,9 +111,6 @@ public class CmblifeSDK {
 
     /**
      * 唤起浏览器
-     *
-     * @param context
-     * @param url
      */
     private static void startWebExplorer(Context context, String url) {
         Intent intent = new Intent();
@@ -134,10 +122,6 @@ public class CmblifeSDK {
 
     /**
      * 唤起掌上生活
-     *
-     * @param context
-     * @param protocol
-     * @param callBackActivity
      */
     public static String startCmblife(Context context,
                                       String protocol, Class<?> callBackActivity, String requestCode) {
@@ -204,9 +188,6 @@ public class CmblifeSDK {
 
     /**
      * 处理掌上生活回调逻辑
-     *
-     * @param listener
-     * @param intent
      */
     public static void handleCallBack(ICmblifeListener listener, Intent intent) throws Exception {
         if (null == listener || null == intent) {
@@ -224,9 +205,6 @@ public class CmblifeSDK {
 
     /**
      * json报文转map
-     *
-     * @param jsonString
-     * @return
      */
     private static Map<String, String> jsonStringToMap(String jsonString)
             throws Exception {
@@ -245,9 +223,6 @@ public class CmblifeSDK {
 
     /**
      * 获取掌上生活公钥
-     *
-     * @param context
-     * @return
      */
     private static String getPubKey(Context context) {
         try {

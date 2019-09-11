@@ -2,18 +2,16 @@ package com.jn.kiku.widget.imageview;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 import com.jn.kiku.R;
 
 
 /**
- * @version V1.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (黑色加载View)
- * @create by: chenwei
- * @date 2018/05/09 18:40
+ * Author：Stevie.Chen Time：2019/8/29
+ * Class Comment：黑色加载View
  */
 public class SpinBlackView extends AppCompatImageView {
 

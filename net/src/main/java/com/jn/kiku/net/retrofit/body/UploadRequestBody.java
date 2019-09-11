@@ -1,6 +1,6 @@
 package com.jn.kiku.net.retrofit.body;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.jn.kiku.net.retrofit.callback.ProgressListener;
 

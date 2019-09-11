@@ -10,8 +10,9 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.jn.kiku.BuildConfig;
 
@@ -104,24 +105,31 @@ public class MediaPlayerBinderService extends Service {
 //        mediaPlayer.setScreenOnWhilePlaying(true);
 
         // 如果你使用wifi播放流媒体，你还需要持有wifi锁
-        wifiLock = ((WifiManager) getApplicationContext()
-                .getSystemService(Context.WIFI_SERVICE))
-                .createWifiLock(WifiManager.WIFI_MODE_FULL, "wifilock");
-        wifiLock.acquire();
+        WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (manager != null) {
+            wifiLock = manager.createWifiLock(WifiManager.WIFI_MODE_FULL, "wifilock");
+        }
+        if (wifiLock != null)
+            wifiLock.acquire();
 
         mediaPlayer.setOnPreparedListener(mp -> {
             mediaPlayer.start();
             isPause = false;
+            if (mIPlayProgressListener != null)
+                mIPlayProgressListener.onPrepared(mediaPlayer);
         });
         // 设置播放错误监听
         mediaPlayer.setOnErrorListener((mediaPlayer, i, i1) -> {
             mediaPlayer.reset();
             return false;
         });
-
+        //解决部分手机上每次播放音频时，就触发onCompletion()方法，导致执行destroy方法，关闭服务
+        // 设置OnErrorListener，将onError()返回true即可。
+        // 在源码中可以查到MediaPlayer的handle中播放异常时，会检测OnErrorListener对象是否为空，如果为空就不会去调用onCompletion()方法了
+        mediaPlayer.setOnErrorListener((mediaPlayer, i, i1) -> true);
         // 设置播放完成监听
         mediaPlayer.setOnCompletionListener(mediaPlayer -> {
-            if(mIPlayProgressListener != null)
+            if (mIPlayProgressListener != null)
                 mIPlayProgressListener.onComplete(mediaPlayer);
             destroy();
             stopSelf();
@@ -202,6 +210,9 @@ public class MediaPlayerBinderService extends Service {
     }
 
     public interface IPlayProgressListener {
+
+        void onPrepared(MediaPlayer mediaPlayer);
+
         void onProgress(float progress);
 
         void onComplete(MediaPlayer mediaPlayer);

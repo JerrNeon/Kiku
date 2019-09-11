@@ -49,15 +49,15 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    testImplementation dep["junit"]
+    androidTestImplementation dep["runner"]
+    androidTestImplementation dep["espresso-core"]
 
     api dep["appcompat-v7"]
     api dep["recyclerview-v7"]
     api dep["design"]
     //注解
-    api dep["androidx-annotation"]
+    api dep["annotation"]
     //android自带生命周期组件
     api dep["lifecycle"]
     api dep["lifecycle-java8"]

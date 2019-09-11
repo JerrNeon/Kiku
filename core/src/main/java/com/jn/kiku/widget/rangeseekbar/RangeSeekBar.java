@@ -14,26 +14,24 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.ColorRes;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
-import com.jn.kiku.R;
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
+
 import com.jn.common.util.DensityUtils;
+import com.jn.kiku.R;
 import com.jn.kiku.utils.NumberUtils;
 
 import java.math.BigDecimal;
 
 /**
- * @version V1.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (左右都变都可滑动的SeekBar, 用于范围选值)
- * @create by: chenwei
- * @date 2017/5/3 12:59
+ * Author：Stevie.Chen Time：2019/8/29
+ * Class Comment：左右都变都可滑动的SeekBar, 用于范围选值
  */
 public class RangeSeekBar<T extends Number> extends AppCompatImageView {
 

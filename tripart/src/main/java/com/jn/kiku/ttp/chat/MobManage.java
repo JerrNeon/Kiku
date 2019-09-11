@@ -16,11 +16,8 @@ import com.jn.kiku.ttp.TtpConstants;
 import java.util.List;
 
 /**
- * @version V2.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (环信管理)
- * @create by: chenwei
- * @date 2017/10/17 10:59
+ * Author：Stevie.Chen Time：2019/9/11
+ * Class Comment：环信管理
  */
 public class MobManage {
 

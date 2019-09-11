@@ -2,18 +2,16 @@ package com.jn.kiku.ttp.bug;
 
 import android.app.Activity;
 import android.app.Application;
-import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
+
+import androidx.fragment.app.Fragment;
 
 import com.bugtags.library.Bugtags;
 import com.jn.kiku.ttp.TtpConstants;
 
 /**
- * @version V2.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (Bugtags)
- * @create by: chenwei
- * @date 2018/3/23 10:52
+ * Author：Stevie.Chen Time：2019/9/11
+ * Class Comment：Bugtags
  */
 public class BugtagsManage {
 
@@ -38,8 +36,6 @@ public class BugtagsManage {
     /**
      * 在Application初始化
      *
-     * @param appKey
-     * @param application
      * @param event       BTGInvocationEventNone | BTGInvocationEventShake | BTGInvocationEventBubble
      *                    <p>
      *                    BTGInvocationEventNone    // 静默模式，只收集 Crash 信息（如果允许，默认为允许）
@@ -53,8 +49,6 @@ public class BugtagsManage {
 
     /**
      * 回调 1
-     *
-     * @param activity
      */
     public void onResume(Activity activity) {
         Bugtags.onResume(activity);
@@ -62,8 +56,6 @@ public class BugtagsManage {
 
     /**
      * 回调 2
-     *
-     * @param activity
      */
     public void onPause(Activity activity) {
         Bugtags.onPause(activity);
@@ -71,9 +63,6 @@ public class BugtagsManage {
 
     /**
      * 回调 3
-     *
-     * @param activity
-     * @param event
      */
     public void dispatchTouchEvent(Activity activity, MotionEvent event) {
         Bugtags.onDispatchTouchEvent(activity, event);
@@ -82,7 +71,6 @@ public class BugtagsManage {
     /**
      * 回调 1
      *
-     * @param fragment
      */
     public void onResume(Fragment fragment) {
         Bugtags.onResume(fragment);
@@ -91,7 +79,6 @@ public class BugtagsManage {
     /**
      * 回调 2
      *
-     * @param fragment
      */
     public void onPause(Fragment fragment) {
         Bugtags.onPause(fragment);

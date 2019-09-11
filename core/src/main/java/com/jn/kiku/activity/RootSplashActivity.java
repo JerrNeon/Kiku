@@ -3,7 +3,7 @@ package com.jn.kiku.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.jn.common.SPManage;
 import com.jn.kiku.R;

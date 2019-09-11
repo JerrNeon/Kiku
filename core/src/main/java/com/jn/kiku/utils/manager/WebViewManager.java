@@ -1,12 +1,15 @@
 package com.jn.kiku.utils.manager;
 
 import android.app.Activity;
-import android.arch.lifecycle.DefaultLifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
 import android.graphics.Bitmap;
 import android.os.Handler;
-import android.support.annotation.NonNull;
+import android.webkit.JavascriptInterface;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+
+import com.jn.common.util.LogUtils;
 import com.jn.kiku.utils.WebViewUtils;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
@@ -18,14 +21,25 @@ import com.tencent.smtt.sdk.WebViewClient;
 public class WebViewManager implements DefaultLifecycleObserver {
 
     private static final int MSG_WHAT = 0x01;
+    private static final String META = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n" +
+            "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+            "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0,viewport-fit=cover\">\n" +
+            "<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n" +
+            "<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black\">\n" +
+            "<meta name=\"format-detection\" content=\"telephone=no\">";
     private static final String CSS_STYLE = "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://mplanetasset.allyes.com/download/webview-reset.css\" >";
 
     private Activity mActivity;
     private WebView mWebView;
-    private boolean isPageFinished;
+    private int loadTimes;//加载次数
+    private OnContentChangeListener onContentChangeListener;//WebView高度监听
+
     private Handler mHandler = new Handler(msg -> {
         if (msg.what == MSG_WHAT) {
-            isPageFinished = true;
+            if (onContentChangeListener != null) {
+                float value = (float) msg.obj;
+                onContentChangeListener.onContentChange((int) value);
+            }
         }
         return false;
     });
@@ -40,7 +54,7 @@ public class WebViewManager implements DefaultLifecycleObserver {
             return;
         WebViewUtils.loadDataWithBaseURL(mWebView, htmlText);
         //webView加载带CSS样式的富文本时有时会出现大面积空白
-        WebViewUtils.loadDataWithBaseURL(mWebView, CSS_STYLE + htmlText);
+        WebViewUtils.loadDataWithBaseURL(mWebView, META + CSS_STYLE + htmlText);
     }
 
     public void loadUrl(String url) {
@@ -68,10 +82,8 @@ public class WebViewManager implements DefaultLifecycleObserver {
             @Override
             public void onPageFinished(WebView webView, String s) {
                 //webView加载有时会出现大面积空白
-                mWebView.loadUrl("javascript:App.resize(document.body.getBoundingClientRect().height)");
-                super.onPageFinished(webView, s);
-                //延迟设置加载完成标志，因为{ExpandWebView}中OnDraw方法中执行时间是在此方法之后
-                mHandler.sendEmptyMessageDelayed(MSG_WHAT, 500);
+                //mWebView.loadUrl("javascript:App.resize(document.body.getBoundingClientRect().height)");
+                webView.loadUrl("javascript:AndroidFunction.resize(document.body.scrollHeight)");
             }
 
             @Override
@@ -80,15 +92,29 @@ public class WebViewManager implements DefaultLifecycleObserver {
                 //网页加载失败
             }
         });
+        mWebView.addJavascriptInterface(this, "AndroidFunction");
     }
 
-    public boolean isPageFinished() {
-        return isPageFinished;
+    @JavascriptInterface
+    public void resize(final float height) {
+        if (loadTimes == 0) {
+            loadTimes++;
+            return;
+        }
+        float webViewHeight = (height * mActivity.getResources().getDisplayMetrics().density);
+        LogUtils.i("WebView Height：" + webViewHeight);
+        mHandler.obtainMessage(MSG_WHAT, webViewHeight).sendToTarget();
+    }
+
+    public void setOnContentChangeListener(OnContentChangeListener onContentChangeListener) {
+        this.onContentChangeListener = onContentChangeListener;
     }
 
     @Override
     public void onCreate(@NonNull LifecycleOwner owner) {
         WebViewUtils.initTenCentWebView(mActivity, mWebView);
+        mWebView.setBackgroundColor(0);
+        mWebView.setAlpha(1f);
         setWebViewClient();
     }
 
@@ -119,5 +145,12 @@ public class WebViewManager implements DefaultLifecycleObserver {
             mHandler.removeCallbacksAndMessages(null);
             mHandler = null;
         }
+    }
+
+    /**
+     * 监听WebView内容高度
+     */
+    public interface OnContentChangeListener {
+        void onContentChange(int height);
     }
 }

@@ -1,8 +1,10 @@
 package com.jn.kiku.adapter;
 
 import android.app.Activity;
-import android.support.annotation.LayoutRes;
-import android.support.v4.app.Fragment;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
@@ -46,6 +48,15 @@ public abstract class BaseRvMultiItemAdapter<T extends MultiItemEntity> extends 
         for (int i = 0; i < itemTypeArray.length; i++) {
             addItemType(itemTypeArray[i], layoutResourceIdArray[i]);
         }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull BaseAdapterViewHolder holder, int position) {
+        if (mFragment != null)
+            holder.bindImageContext(mFragment);
+        else
+            holder.bindImageContext(mActivity);
+        super.onBindViewHolder(holder, position);
     }
 
     protected abstract int[] getItemType();

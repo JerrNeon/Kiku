@@ -80,7 +80,7 @@ dependencies {
     implementation project(':net')
 
     implementation(name: 'alipaySdk-15.6.5-20190718211148', ext: 'aar')//alipay
-    implementation files('libs/open_sdk_r6019_lite.jar')//QQ
+    implementation files('libs/open_sdk_r6140_lite.jar')//QQ
     api files('libs/BaiduLBS_Android.jar')//baiDuMap
     implementation files("libs/zhuge_EE_3.0.1.jar")//zhugeio
     //WeChat(ping++里已有微信的包)

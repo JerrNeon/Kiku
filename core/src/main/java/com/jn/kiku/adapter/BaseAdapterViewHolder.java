@@ -2,15 +2,16 @@ package com.jn.kiku.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.request.target.SimpleTarget;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.request.target.DrawableImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.jn.kiku.common.api.IImageAdapterView;
@@ -133,27 +134,19 @@ public class BaseAdapterViewHolder extends BaseViewHolder implements IImageAdapt
     @Override
     public BaseAdapterViewHolder displayWrapImage(int viewId, Object url, int width, int totalSpace) {
         ImageView view = getView(viewId);
-        GlideManage.displayImage(getImageContext(), url, new SimpleTarget<Bitmap>() {
+        GlideManage.displayImage(getImageContext(), url, new DrawableImageViewTarget(view) {
+
             @Override
-            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                int imageWidth = resource.getWidth();
-                int imageHeight = resource.getHeight();
+            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                super.onResourceReady(resource, transition);
+                int imageWidth = resource.getIntrinsicWidth();
+                int imageHeight = resource.getIntrinsicHeight();
                 ViewGroup.LayoutParams lp = view.getLayoutParams();
                 lp.width = width - totalSpace;
                 lp.height = width * imageHeight / imageWidth;
                 view.setLayoutParams(lp);
-                //判断是否为gif，gif重新加载
-                if (url instanceof String) {
-                    String urlStr = (String) url;
-                    if (urlStr.contains("gif") || urlStr.contains("GIF") || urlStr.contains("Gif")) {
-                        GlideManage.displayImage(getImageContext(), url, view, false, false, true, true);
-                    } else {
-                        displayImage(viewId, url);
-                    }
-                } else {
-                    displayImage(viewId, url);
-                }
             }
+
         });
         return this;
     }

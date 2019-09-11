@@ -1,6 +1,7 @@
 package com.jn.kiku.ttp.map;
 
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;

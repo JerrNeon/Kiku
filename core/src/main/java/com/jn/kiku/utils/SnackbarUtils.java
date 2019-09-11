@@ -1,7 +1,5 @@
 package com.jn.kiku.utils;
 
-import android.support.annotation.ColorInt;
-import android.support.design.widget.Snackbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -10,14 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import androidx.annotation.ColorInt;
+
+import com.google.android.material.snackbar.Snackbar;
+
 import java.lang.ref.WeakReference;
 
 /**
- * @version V1.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (Snackbar)
- * @create by: chenwei
- * @date 2017/3/14 16:32
+ * Author：Stevie.Chen Time：2019/8/29
+ * Class Comment：Snackbar
  */
 public class SnackbarUtils {
 

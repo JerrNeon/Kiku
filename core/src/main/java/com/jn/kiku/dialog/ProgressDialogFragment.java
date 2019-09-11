@@ -5,27 +5,25 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.jn.kiku.R;
 import com.jn.kiku.widget.imageview.SpinBlackView;
 
 /**
- * @version V2.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (加载对话框)
- * @create by: chenwei
- * @date 2018/5/9 17:26
+ * Author：Stevie.Chen Time：2019/8/29
+ * Class Comment：加载对话框
  */
 public class ProgressDialogFragment extends DialogFragment {
 
@@ -50,7 +48,7 @@ public class ProgressDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_progress, null, false);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_progress, container, false);
         mSpinBlackProgressView = view.findViewById(R.id.sbv_progressDialog);
         return view;
     }
@@ -80,12 +78,9 @@ public class ProgressDialogFragment extends DialogFragment {
         mStopMillisecond = Long.MAX_VALUE;
 
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mStopMillisecond > System.currentTimeMillis())
-                    showDialogAfterDelay(fm, tag);
-            }
+        handler.postDelayed(() -> {
+            if (mStopMillisecond > System.currentTimeMillis())
+                showDialogAfterDelay(fm, tag);
         }, DELAY_MILLISECOND);
     }
 
@@ -111,12 +106,7 @@ public class ProgressDialogFragment extends DialogFragment {
     private void cancelWhenShowing() {
         if (mStopMillisecond < mStartMillisecond + DELAY_MILLISECOND + SHOW_MIN_MILLISECOND) {
             final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    dismissAllowingStateLoss();
-                }
-            }, SHOW_MIN_MILLISECOND);
+            handler.postDelayed(this::dismissAllowingStateLoss, SHOW_MIN_MILLISECOND);
         } else {
             dismissAllowingStateLoss();
         }
@@ -124,18 +114,12 @@ public class ProgressDialogFragment extends DialogFragment {
 
     private void cancelWhenNotShowing() {
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dismissAllowingStateLoss();
-            }
-        }, DELAY_MILLISECOND);
+        handler.postDelayed(this::dismissAllowingStateLoss, DELAY_MILLISECOND);
     }
 
     /**
      * 设置加载图标
      *
-     * @param resId
      */
     public ProgressDialogFragment setProgressImageResource(@DrawableRes int resId) {
         if (mSpinBlackProgressView != null)

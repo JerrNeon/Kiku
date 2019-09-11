@@ -1,14 +1,14 @@
 package com.jn.kiku.ttp.pay.alipay;
 
 import android.app.Activity;
-import android.arch.lifecycle.DefaultLifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.alipay.sdk.app.AuthTask;
 import com.alipay.sdk.app.PayTask;
@@ -249,32 +249,32 @@ public class AliPayManage implements Handler.Callback, ILogToastView, DefaultLif
     }
 
     @Override
-    public void onCreate(@android.support.annotation.NonNull LifecycleOwner owner) {
+    public void onCreate(@NonNull LifecycleOwner owner) {
 
     }
 
     @Override
-    public void onStart(@android.support.annotation.NonNull LifecycleOwner owner) {
+    public void onStart(@NonNull LifecycleOwner owner) {
 
     }
 
     @Override
-    public void onResume(@android.support.annotation.NonNull LifecycleOwner owner) {
+    public void onResume(@NonNull LifecycleOwner owner) {
 
     }
 
     @Override
-    public void onPause(@android.support.annotation.NonNull LifecycleOwner owner) {
+    public void onPause(@NonNull LifecycleOwner owner) {
 
     }
 
     @Override
-    public void onStop(@android.support.annotation.NonNull LifecycleOwner owner) {
+    public void onStop(@NonNull LifecycleOwner owner) {
 
     }
 
     @Override
-    public void onDestroy(@android.support.annotation.NonNull LifecycleOwner owner) {
+    public void onDestroy(@NonNull LifecycleOwner owner) {
         onDestroy();
     }
 }

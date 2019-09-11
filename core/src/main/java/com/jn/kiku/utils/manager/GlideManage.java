@@ -2,12 +2,13 @@ package com.jn.kiku.utils.manager;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.DrawableRes;
 import android.widget.ImageView;
 
+import androidx.annotation.DrawableRes;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.jn.kiku.R;
 
 /**
@@ -132,7 +133,7 @@ public class GlideManage {
      * @param url     加载资源路径
      * @param target  目标
      */
-    public static void displayImage(final Object context, final Object url, final SimpleTarget<Bitmap> target) {
+    public static void displayImage(final Object context, final Object url, final CustomTarget<Bitmap> target) {
         GlideUtil.displayImage(context, url, target);
     }
 

@@ -1,7 +1,7 @@
 package com.jn.kiku.net.retrofit.observer;
 
 import android.content.Context;
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import com.jn.common.util.ContextUtils;
 import com.jn.common.util.ToastUtils;

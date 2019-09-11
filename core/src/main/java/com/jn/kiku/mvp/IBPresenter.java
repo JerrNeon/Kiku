@@ -1,6 +1,6 @@
 package com.jn.kiku.mvp;
 
-import android.arch.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.DefaultLifecycleObserver;
 
 import io.reactivex.disposables.Disposable;
 

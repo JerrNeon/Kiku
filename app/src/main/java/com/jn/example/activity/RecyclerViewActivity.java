@@ -1,7 +1,8 @@
 package com.jn.example.activity;
 
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.jn.example.adapter.NewsAdapter;
 import com.jn.example.entiy.NewsVO;

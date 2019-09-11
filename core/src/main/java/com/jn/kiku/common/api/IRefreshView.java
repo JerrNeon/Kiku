@@ -1,6 +1,6 @@
 package com.jn.kiku.common.api;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 
 import com.jn.kiku.annonation.LoadMoreEnableType;
 import com.jn.kiku.annonation.RefreshOperateType;

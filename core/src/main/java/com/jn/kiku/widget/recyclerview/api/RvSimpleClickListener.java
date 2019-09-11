@@ -1,6 +1,6 @@
 package com.jn.kiku.widget.recyclerview.api;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;

@@ -1,7 +1,8 @@
 package com.jn.example.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
+import androidx.fragment.app.Fragment;
 
 import com.jn.example.R;
 import com.jn.example.entiy.XaResult2;

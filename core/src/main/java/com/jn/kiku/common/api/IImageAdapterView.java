@@ -1,8 +1,9 @@
 package com.jn.kiku.common.api;
 
 import android.app.Activity;
-import android.support.annotation.IdRes;
-import android.support.v4.app.Fragment;
+
+import androidx.annotation.IdRes;
+import androidx.fragment.app.Fragment;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.jn.kiku.adapter.BaseAdapterViewHolder;

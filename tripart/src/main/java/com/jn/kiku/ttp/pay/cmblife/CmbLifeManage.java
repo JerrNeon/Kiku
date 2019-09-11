@@ -11,11 +11,8 @@ import com.jn.common.util.ToastUtils;
 import java.util.Map;
 
 /**
- * @version V2.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (招行分期支付管理)
- * @create by: chenwei
- * @date 2018/4/3 16:43
+ * Author：Stevie.Chen Time：2019/9/11
+ * Class Comment：招行分期支付管理
  */
 public class CmbLifeManage implements ILogToastView, ICmblifeListener {
 
@@ -24,12 +21,12 @@ public class CmbLifeManage implements ILogToastView, ICmblifeListener {
     private static final String paySuccessResultCode = "1000";//支付成功结果code
     private static final String payCancelResultCode = "2000";//支付取消结果code
 
-    private Context mContext = null;
+    private Context mContext;
     private static CmbLifeManage instance = null;
     private CmbLifePayResultListener mCmbLifePayResultListener = null;
 
     private CmbLifeManage(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
     }
 
     public static synchronized CmbLifeManage getInstance(Context context) {
@@ -63,8 +60,6 @@ public class CmbLifeManage implements ILogToastView, ICmblifeListener {
 
     /**
      * 支付结果回调
-     *
-     * @param resultMap
      */
     public void onCmblifeCallBack(Map<String, String> resultMap) {
         String respCode = resultMap.get(payResultCode);
@@ -83,8 +78,6 @@ public class CmbLifeManage implements ILogToastView, ICmblifeListener {
 
     /**
      * 处理回调
-     *
-     * @param intent
      */
     public void handleCallBack(Intent intent) {
         try {
