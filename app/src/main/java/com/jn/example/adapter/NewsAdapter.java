@@ -28,7 +28,7 @@ public class NewsAdapter extends BaseRvAdapter<NewsVO> {
     @Override
     protected void convert(BaseAdapterViewHolder helper, NewsVO item) {
         helper
-                .displayImage(mImageContext, R.id.iv_news, item.getImage())
+                .displayImage(R.id.iv_news, item.getImage())
                 .setText(R.id.tv_news, item.getTitle());
     }
 }

@@ -3,6 +3,7 @@ package com.jn.example;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.jn.common.util.ContextUtils;
 import com.jn.example.request.ApiService;
 import com.jn.kiku.RootApplication;
 
@@ -22,7 +23,7 @@ public class BaseApplication extends RootApplication {
     }
 
     @Override
-    protected boolean isLOG_DEBUG() {
+    protected boolean isLogEnable() {
         return BuildConfig.DEBUG;
     }
 
@@ -32,12 +33,18 @@ public class BaseApplication extends RootApplication {
         instance = this;
         initActivityManager();
         initRetrofit(ApiService.BASE_URL);
-        initUtilsManager(BuildConfig.APPLICATION_ID);
+        initUtilsManager();
     }
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);//突破65536个方法数
+    }
+
+    @Override
+    protected void initUtilsManager() {
+        super.initUtilsManager();
+        ContextUtils.getInstance().init(this);
     }
 }

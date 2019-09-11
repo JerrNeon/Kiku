@@ -3,9 +3,9 @@ package com.jn.example.request;
 import android.app.Activity;
 
 import com.jn.example.entiy.XaResult;
-import com.jn.kiku.retrofit.exception.OkHttpErrorHelper;
-import com.jn.kiku.retrofit.exception.OkHttpException;
-import com.jn.kiku.retrofit.observer.BaseObserver;
+import com.jn.kiku.net.retrofit.exception.OkHttpErrorHelper;
+import com.jn.kiku.net.retrofit.exception.OkHttpException;
+import com.jn.kiku.net.retrofit.observer.BaseObserver;
 
 /**
  * @version V2.0
@@ -35,10 +35,10 @@ public abstract class BaseResponseObserver<T> extends BaseObserver<XaResult<T>, 
     @Override
     public void onNext(XaResult<T> tXaResult) {
         if (tXaResult.getCode() == 0) {
-            OkHttpException okHttpException = new OkHttpException(tXaResult.getMsg());
+            OkHttpException okHttpException = new OkHttpException(String.valueOf(tXaResult.getCode()), tXaResult.getMsg());
             String errorMsg = "";
             if (mErrorType == ALL)
-                errorMsg = OkHttpErrorHelper.getMessage(okHttpException, mContext);
+                errorMsg = OkHttpErrorHelper.getMessage(okHttpException);
             onFailure(okHttpException, errorMsg);
         } else {
             try {

@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+
+def dep = rootProject.ext.dependencies // dep
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        debug {
+
+        }
+        debugTest {
+
+        }
+        releaseTest {
+
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    testImplementation 'junit:junit:4.12'
+
+    implementation project(':common')
+    api dep["retrofit"]
+    api dep["retrofit-converter-gson"]
+    api dep["retrofit-adapter-rxjava2"]
+    api dep["okhttp3"]
+    api dep["okhttp3-logging-interceptor"]
+    api dep["rxjava2"]
+    api dep["rxandroid2"]
+}

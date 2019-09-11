@@ -11,6 +11,7 @@ import com.jn.kiku.utils.ImageUtil;
 
 import butterknife.BindView;
 
+
 /**
  * @version V1.0
  * @ClassName: ${CLASS_NAME}

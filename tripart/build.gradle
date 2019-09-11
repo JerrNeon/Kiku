@@ -1,0 +1,109 @@
+apply plugin: 'com.android.library'
+
+def dep = rootProject.ext.dependencies // dep
+
+ext {
+    PUBLISH_GROUP_ID = 'com.jn.kiku.ttp'
+    PUBLISH_ARTIFACT_ID = 'KiKu-ttp'
+    PUBLISH_VERSION = '1.0.1'
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a"
+        }
+
+        manifestPlaceholders = [
+                JPUSH_PKGNAME: rootProject.ext.applicationId,
+                JPUSH_APPKEY : "4e1cefc8f204d85588034b73", //JPush上注册的包名对应的AppKey.
+                JPUSH_CHANNEL: "JPush", //暂时填写默认值即可.
+        ]
+    }
+
+    buildTypes {
+        debug {
+
+        }
+        debugTest {
+
+        }
+        releaseTest {
+
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    //system cancel check.9 image
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDir 'libs'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation dep["junit"]
+    implementation dep["multidex"]
+
+    //common
+    implementation project(':common')
+    //net
+    implementation project(':net')
+
+    implementation(name: 'alipaySdk-15.6.5-20190718211148', ext: 'aar')//alipay
+    implementation files('libs/open_sdk_r6019_lite.jar')//QQ
+    api files('libs/BaiduLBS_Android.jar')//baiDuMap
+    implementation files("libs/zhuge_EE_3.0.1.jar")//zhugeio
+    //WeChat(ping++里已有微信的包)
+    api dep["wechat-sdk"]
+    //sina
+    api dep["sinaWeiBo-sdk"]
+    //jpush
+    api dep["jpush-sdk"]
+    api dep["jpush-core"]
+    //umeng
+    api dep["umeng-common"]
+    api dep["umeng-analytics"]
+    //Ping++
+    implementation dep["pingpp"]
+    //implementation dep["pingpp-wechat"]
+    implementation dep["pingpp-upacp"]
+    //mob
+    implementation dep["mob_kefu"]
+    //baidu
+    implementation dep["mtj-sdk"]
+    //bugtags
+    debugImplementation dep["bugtags-debug"]
+    releaseImplementation dep["bugtags-release"]
+}
+
+apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
