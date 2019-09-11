@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 
+def config = rootProject.ext.android //config
 def dep = rootProject.ext.dependencies // dep
 
 ext {
@@ -9,19 +10,19 @@ ext {
 }
 
 android {
-    compileSdkVersion "android-P"
+    compileSdkVersion config.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
+        versionCode config.versionCode
+        versionName config.versionName
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
             // armeabi cpu  "mips"
-            abiFilters "armeabi", "armeabi-v7a", "x86"
+            abiFilters "armeabi", "armeabi-v7a"
         }
     }
 

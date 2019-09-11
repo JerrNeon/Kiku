@@ -5,6 +5,7 @@ def jPush = rootProject.ext.jpush //jpush
 
 android {
     compileSdkVersion config.compileSdkVersion
+
     defaultConfig {
         applicationId config.applicationId
         minSdkVersion config.minSdkVersion
