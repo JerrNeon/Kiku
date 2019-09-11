@@ -3,6 +3,7 @@ package com.jn.kiku.utils.recyclerview;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.jn.common.util.LogUtils;
 import com.jn.kiku.utils.manager.GlideManage;
 
 /**
@@ -20,10 +21,14 @@ public class GlideOnScrollListener extends RecyclerView.OnScrollListener {
     @Override
     public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
-        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-            GlideManage.resumeRequests(mContext);
-        } else {
-            GlideManage.pauseRequests(mContext);
+        try {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                GlideManage.resumeRequests(mContext);
+            } else {
+                GlideManage.pauseRequests(mContext);
+            }
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage());
         }
     }
 }
