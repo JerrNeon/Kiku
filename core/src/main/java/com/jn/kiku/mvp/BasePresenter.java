@@ -10,20 +10,25 @@ import io.reactivex.disposables.Disposable;
  * Author：Stevie.Chen Time：2019/8/28
  * Class Comment：BasePresenter
  */
-public class BasePresenter<V extends IBView, M extends IBModel> implements IBPresenter<V> {
+public abstract class BasePresenter<V extends IBView, M extends IBModel> implements IBPresenter {
 
     protected V mView;
     protected M mModel;
     private CompositeDisposable mCompositeDisposable;
 
+    protected abstract M getModel();
+
+    @SuppressWarnings("unchecked")
     @Override
-    public void attachView(V view) {
-        mView = view;
+    public void attachView(IBView view) {
+        mView = (V) view;
+        mModel = getModel();
     }
 
     @Override
     public void detachView() {
         mView = null;
+        mModel = null;
     }
 
     @Override

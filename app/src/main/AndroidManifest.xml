@@ -16,7 +16,10 @@
         tools:replace="android:allowBackup,android:appComponentFactory"
         tools:targetApi="p">
 
-        <activity android:name=".activity.RecyclerViewActivity">
+        <activity
+            android:name=".activity.NewsListActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

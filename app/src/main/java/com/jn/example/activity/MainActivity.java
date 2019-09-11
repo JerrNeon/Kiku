@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment;
 
 import com.jn.example.R;
 import com.jn.example.entiy.XaResult2;
-import com.jn.example.request.ApiService;
+import com.jn.example.request.Api;
 import com.jn.kiku.activity.RootMainActivity;
 import com.jn.kiku.entiy.VersionUpdateVO;
 import com.jn.kiku.net.RetrofitManage;
@@ -63,7 +63,7 @@ public class MainActivity extends RootMainActivity {
     @Override
     public void sendRequest() {
         RetrofitManage.getInstance()
-                .create(ApiService.class)
+                .create(Api.class)
                 .getVersionUpdateInfo(1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

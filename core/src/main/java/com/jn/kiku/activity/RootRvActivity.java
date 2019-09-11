@@ -18,6 +18,7 @@ import com.jn.kiku.annonation.LoadMoreEnableType;
 import com.jn.kiku.annonation.RefreshOperateType;
 import com.jn.kiku.annonation.RefreshViewType;
 import com.jn.kiku.common.api.IRvView;
+import com.jn.kiku.mvp.IBPresenter;
 import com.jn.kiku.utils.NetUtils;
 import com.jn.kiku.utils.ViewsUtils;
 import com.jn.kiku.utils.recyclerview.GlideOnScrollListener;
@@ -30,7 +31,7 @@ import java.util.List;
  * Author：Stevie.Chen Time：2019/8/13
  * Class Comment：RootRvActivity
  */
-public abstract class RootRvActivity<T> extends RootRefreshActivity implements IRvView<T> {
+public abstract class RootRvActivity<P extends IBPresenter, T> extends RootRefreshActivity<P> implements IRvView<T> {
 
     protected RecyclerView mRecyclerView;//RecyclerView
     protected View mEmptyView;//empty or failure view

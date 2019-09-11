@@ -8,9 +8,9 @@ import io.reactivex.disposables.Disposable;
  * Author：Stevie.Chen Time：2019/4/8
  * Class Comment：IPresenter
  */
-public interface IBPresenter<V extends IBView> extends DefaultLifecycleObserver {
+public interface IBPresenter extends DefaultLifecycleObserver {
 
-    void attachView(V view);
+    void attachView(IBView view);
 
     void detachView();
 

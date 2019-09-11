@@ -22,21 +22,16 @@ public abstract class RxObserver<T> extends RxBasePresenterObserver<XaResult<T>,
 
     @Override
     public void onNext(XaResult<T> tXaResult) {
-        if (!tXaResult.getCode().equals(ApiStatus.CODE_200)) {
-            if (tXaResult.getCode().equals(ApiStatus.CODE_10002)) {
-                OkHttpException okHttpException = new OkHttpException(tXaResult.getCode(), tXaResult.getMsg());
-                onFailure(okHttpException, "");
-            } else {
-                OkHttpException okHttpException = new OkHttpException(tXaResult.getCode(), tXaResult.getMsg());
-                String errorMsg = "";
-                if (mErrorType == ALL)
-                    errorMsg = OkHttpErrorHelper.getMessage(okHttpException);
-                onFailure(okHttpException, errorMsg);
-            }
+        if (!String.valueOf(tXaResult.getCode()).equals(ApiStatus.CODE_200)) {
+            OkHttpException okHttpException = new OkHttpException(String.valueOf(tXaResult.getCode()), tXaResult.getMessage());
+            String errorMsg = "";
+            if (mErrorType == ALL)
+                errorMsg = OkHttpErrorHelper.getMessage(okHttpException);
+            onFailure(okHttpException, errorMsg);
         } else {
             try {
                 onResponse(tXaResult);
-                onSuccess(tXaResult.getData());
+                onSuccess(tXaResult.getResult());
             } catch (Exception e) {
                 e.printStackTrace();
             }

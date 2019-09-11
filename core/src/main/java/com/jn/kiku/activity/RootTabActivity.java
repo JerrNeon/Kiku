@@ -12,13 +12,13 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.jn.kiku.R;
 import com.jn.kiku.common.api.ITabLayoutView;
-import com.jn.kiku.utils.ScreenUtils;
+import com.jn.kiku.mvp.IBPresenter;
 
 /**
  * Author：Stevie.Chen Time：2019/8/13
  * Class Comment：RootTabActivity
  */
-public abstract class RootTabActivity extends RootTbActivity implements ITabLayoutView {
+public abstract class RootTabActivity<P extends IBPresenter> extends RootTbActivity<P> implements ITabLayoutView {
 
     protected Fragment[] fragments = null;
     protected String[] titles = null;
@@ -80,7 +80,7 @@ public abstract class RootTabActivity extends RootTbActivity implements ITabLayo
 
     @Override
     public boolean isTabIndicatorFullWidth() {
-        return true;
+        return false;
     }
 
     @Override
@@ -96,11 +96,6 @@ public abstract class RootTabActivity extends RootTbActivity implements ITabLayo
     @Override
     public int getTabSelectedTextColorId() {
         return R.color.colorPrimaryDark;
-    }
-
-    @Override
-    public int getTabItemMargin() {
-        return ScreenUtils.getScreenWidth(mContext) / fragments.length / 10;//item width's percent one of 10
     }
 
     private class BaseTabFragmentAdapter extends FragmentPagerAdapter {

@@ -29,7 +29,9 @@ public interface ITabLayoutView {
      *
      * @return true：match_parent  false：wrap_content  默认true
      */
-    boolean isTabIndicatorFullWidth();
+    default boolean isTabIndicatorFullWidth() {
+        return false;
+    }
 
     /**
      * 获取指示器颜色
@@ -48,9 +50,4 @@ public interface ITabLayoutView {
      */
     @ColorRes
     int getTabSelectedTextColorId();
-
-    /**
-     * 获取子项左右margin
-     */
-    int getTabItemMargin();
 }

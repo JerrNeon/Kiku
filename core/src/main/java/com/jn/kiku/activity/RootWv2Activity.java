@@ -3,7 +3,6 @@ package com.jn.kiku.activity;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -13,15 +12,18 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import androidx.annotation.Nullable;
+
 import com.jn.kiku.R;
 import com.jn.kiku.common.api.IWvView;
+import com.jn.kiku.mvp.IBPresenter;
 import com.jn.kiku.utils.WebViewUtils;
 
 /**
  * Author：Stevie.Chen Time：2019/8/20
  * Class Comment：RootWvActivity - Android自带的WebView
  */
-public class RootWv2Activity extends RootTbActivity implements IWvView {
+public class RootWv2Activity<P extends IBPresenter> extends RootTbActivity<P> implements IWvView {
 
     protected WebView mWebView;//WebView
     protected ProgressBar mProgressBar;//ProgressBar

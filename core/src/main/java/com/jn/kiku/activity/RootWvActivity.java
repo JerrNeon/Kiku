@@ -2,15 +2,17 @@ package com.jn.kiku.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import androidx.annotation.Nullable;
+
 import com.jn.kiku.R;
 import com.jn.kiku.common.api.IWvView;
+import com.jn.kiku.mvp.IBPresenter;
 import com.jn.kiku.utils.WebViewUtils;
 import com.jn.kiku.utils.manager.WebViewManager;
 import com.tencent.smtt.sdk.WebChromeClient;
@@ -20,7 +22,7 @@ import com.tencent.smtt.sdk.WebView;
  * Author：Stevie.Chen Time：2019/8/7
  * Class Comment：RootWvActivity - 腾讯的WebView
  */
-public class RootWvActivity extends RootTbActivity implements IWvView {
+public class RootWvActivity<P extends IBPresenter> extends RootTbActivity<P> implements IWvView {
 
     protected WebView mWebView;//WebView
     protected ProgressBar mProgressBar;//ProgressBar

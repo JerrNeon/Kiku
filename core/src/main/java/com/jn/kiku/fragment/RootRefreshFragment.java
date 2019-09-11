@@ -1,18 +1,20 @@
 package com.jn.kiku.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.jn.kiku.R;
 import com.jn.kiku.annonation.LoadMoreEnableType;
 import com.jn.kiku.annonation.RefreshOperateType;
 import com.jn.kiku.annonation.RefreshViewType;
 import com.jn.kiku.common.api.IRefreshView;
+import com.jn.kiku.mvp.IBPresenter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
@@ -23,7 +25,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
  * Author：Stevie.Chen Time：2019/8/14
  * Class Comment：带刷新的Fragment
  */
-public abstract class RootRefreshFragment extends RootFragment implements IRefreshView, OnRefreshLoadMoreListener {
+public abstract class RootRefreshFragment<P extends IBPresenter> extends RootFragment<P> implements IRefreshView, OnRefreshLoadMoreListener {
 
     protected int mPageIndex, mPageSize, mTotalSize, mTotalPage;//分页信息
     protected @RefreshOperateType

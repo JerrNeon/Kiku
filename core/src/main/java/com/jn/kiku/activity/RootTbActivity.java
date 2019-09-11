@@ -15,6 +15,7 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 
 import com.jn.kiku.R;
+import com.jn.kiku.mvp.IBPresenter;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -23,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
  * Author：Stevie.Chen Time：2019/8/8
  * Class Comment：带标题栏的Activity
  */
-public abstract class RootTbActivity extends RootActivity implements View.OnClickListener {
+public abstract class RootTbActivity<P extends IBPresenter> extends RootActivity<P> implements View.OnClickListener {
 
     protected static final int ROOT_LAYOUT = 1;//root layout
     protected static final int IV_LEFT = 2;//left icon

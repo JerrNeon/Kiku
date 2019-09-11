@@ -8,11 +8,8 @@ import com.jn.kiku.adapter.BaseAdapterViewHolder;
 import com.jn.kiku.adapter.BaseRvAdapter;
 
 /**
- * @version V2.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (这里用一句话描述这个类的作用)
- * @create by: chenwei
- * @date 2018/5/14 15:12
+ * Author：Stevie.Chen Time：2019/9/11
+ * Class Comment：
  */
 public class NewsAdapter extends BaseRvAdapter<NewsVO> {
 
@@ -28,7 +25,7 @@ public class NewsAdapter extends BaseRvAdapter<NewsVO> {
     @Override
     protected void convert(BaseAdapterViewHolder helper, NewsVO item) {
         helper
-                .displayImage(R.id.iv_news, item.getImage())
-                .setText(R.id.tv_news, item.getTitle());
+                .displayImage(R.id.iv_news, item.getThumbnail())
+                .setText(R.id.tv_news, item.getText());
     }
 }

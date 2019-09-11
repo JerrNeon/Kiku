@@ -20,13 +20,14 @@ import com.jn.kiku.R;
 import com.jn.kiku.common.api.IMainView;
 import com.jn.kiku.dialog.VersionUpdateDialog;
 import com.jn.kiku.entiy.VersionUpdateVO;
+import com.jn.kiku.mvp.IBPresenter;
 import com.jn.kiku.receiver.VersionUpdateReceiver;
 
 /**
  * Author：Stevie.Chen Time：2019/8/20
  * Class Comment：RootMainActivity
  */
-public abstract class RootMainActivity extends RootActivity implements IMainView, TabLayout.OnTabSelectedListener {
+public abstract class RootMainActivity<P extends IBPresenter> extends RootActivity<P> implements IMainView, TabLayout.OnTabSelectedListener {
 
     private long mTimeExit = 0;//Back press time
     private static final long mTimeInterval = 2000;//two times Interval

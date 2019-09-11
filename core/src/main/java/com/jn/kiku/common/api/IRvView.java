@@ -29,7 +29,9 @@ public interface IRvView<T> {
      *
      * @return LinearLayoutManager/GridLayoutManager/StaggeredGridLayoutManager
      */
-    RecyclerView.LayoutManager getLayoutManager();
+    default RecyclerView.LayoutManager getLayoutManager() {
+        return null;
+    }
 
     /**
      * 初始化刷新相关控件

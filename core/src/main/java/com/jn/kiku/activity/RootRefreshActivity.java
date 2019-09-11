@@ -12,6 +12,7 @@ import com.jn.kiku.annonation.LoadMoreEnableType;
 import com.jn.kiku.annonation.RefreshOperateType;
 import com.jn.kiku.annonation.RefreshViewType;
 import com.jn.kiku.common.api.IRefreshView;
+import com.jn.kiku.mvp.IBPresenter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
@@ -22,7 +23,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
  * Author：Stevie.Chen Time：2019/8/20
  * Class Comment：RootRefreshActivity
  */
-public abstract class RootRefreshActivity extends RootTbActivity implements IRefreshView, OnRefreshLoadMoreListener {
+public abstract class RootRefreshActivity<P extends IBPresenter> extends RootTbActivity<P> implements IRefreshView, OnRefreshLoadMoreListener {
 
     protected int mPageIndex, mPageSize, mTotalSize, mTotalPage;//page info
     protected @RefreshOperateType

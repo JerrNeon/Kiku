@@ -6,33 +6,31 @@ package com.jn.example.entiy;
  */
 public class XaResult<T> {
 
-    private String code;
-    private String msg;
-    private T data;
+    private int code;
+    private String message;
+    private T result;
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(int code) {
         this.code = code;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getMessage() {
+        return message;
     }
 
-    public XaResult<T> setMsg(String msg) {
-        this.msg = msg;
-        return this;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public T getData() {
-        return data;
+    public T getResult() {
+        return result;
     }
 
-    public XaResult<T> setData(T data) {
-        this.data = data;
-        return this;
+    public void setResult(T result) {
+        this.result = result;
     }
 }

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+
 def dep = rootProject.ext.dependencies //dep
 def jPush = rootProject.ext.jpush //jpush
 
@@ -23,15 +24,16 @@ android {
 
     buildTypes {
         debug {
-
+            buildConfigField "String", "BASE_URL", "\"https://api.apiopen.top/\""
         }
         debugTest {
-
+            buildConfigField "String", "BASE_URL", "\"https://api.apiopen.top/\""
         }
         releaseTest {
-
+            buildConfigField "String", "BASE_URL", "\"https://api.apiopen.top/\""
         }
         release {
+            buildConfigField "String", "BASE_URL", "\"https://api.apiopen.top/\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -62,5 +64,6 @@ dependencies {
     implementation dep["rxlifecycle-android"]
 
     implementation dep["multidex"]
+    implementation dep["jiaozivideoplayer"]
 
 }
