@@ -58,9 +58,6 @@ dependencies {
     api dep["junit"]
     api dep["multidex"]
 
-    //Tencent WebView
-    api files("libs/tbs_sdk_thirdapp_v3.1.0.1034_43100_sharewithdownload_obfs_20170301_182143.jar")
-
     //common
     api project(':common')
     //net
@@ -78,6 +75,8 @@ dependencies {
 
     //jsoup parse Html
     api dep["jsoup"]
+    //Tencent WebView
+    api dep["tbssdk"]
 }
 
 apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
