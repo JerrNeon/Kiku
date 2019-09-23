@@ -28,6 +28,7 @@ import com.jn.kiku.ttp.wxapi.WXPayEntryCallbackActivity;
 import com.tencent.mm.opensdk.constants.Build;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
+import com.tencent.mm.opensdk.modelbiz.WXLaunchMiniProgram;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
@@ -75,7 +76,7 @@ public class WeChatManage implements DefaultLifecycleObserver {
 
     private Handler mHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
         @Override
-        public boolean handleMessage(Message msg) {
+        public boolean handleMessage(@NonNull Message msg) {
             if (msg.what == requestCode1) {
                 if (mWeChatResultListener != null)
                     mWeChatResultListener.onFailure(null);
@@ -130,11 +131,7 @@ public class WeChatManage implements DefaultLifecycleObserver {
             Method method = tClass.getMethod("setWeChatResultListener", WeChatResultListener.class);
             if (listener != null)
                 method.invoke(null, listener);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         SendAuth.Req req = new SendAuth.Req();
@@ -160,11 +157,7 @@ public class WeChatManage implements DefaultLifecycleObserver {
             Method method = tClass.getMethod("setWeChatResultListener", WeChatResultListener.class);
             if (listener != null)
                 method.invoke(null, mWeChatLoginResultListener);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         SendAuth.Req req = new SendAuth.Req();
@@ -190,11 +183,7 @@ public class WeChatManage implements DefaultLifecycleObserver {
             Method method = tClass.getMethod("setWeChatResultListener", WeChatResultListener.class);
             if (listener != null)
                 method.invoke(null, mWeChatLoginResultListener);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         SendAuth.Req req = new SendAuth.Req();
@@ -251,11 +240,7 @@ public class WeChatManage implements DefaultLifecycleObserver {
             Method method = tClass.getMethod("setWeChatResultListener", WeChatResultListener.class);
             if (listener != null)
                 method.invoke(null, listener);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         if (wxMediaMessage != null) {
@@ -292,11 +277,7 @@ public class WeChatManage implements DefaultLifecycleObserver {
             Method method = tClass.getMethod("setWeChatResultListener", WeChatResultListener.class);
             if (listener != null)
                 method.invoke(null, listener);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         PayReq request = new PayReq();
@@ -309,6 +290,33 @@ public class WeChatManage implements DefaultLifecycleObserver {
         request.timeStamp = info.getTimestamp();
         request.sign = info.getSign();
         mIWXAPI.sendReq(request);
+    }
+
+    /**
+     * 跳转到微信小程序
+     *
+     * @param req      请求参数
+     *                 WXLaunchMiniProgram.Req req = new WXLaunchMiniProgram.Req();
+     *                 req.userName = "gh_d43f693ca31f"; // 填小程序原始id
+     *                 req.path = path;                  //拉起小程序页面的可带参路径，不填默认拉起小程序首页，对于小游戏，可以只传入 query 部分，来实现传参效果，如：传入 "?foo=bar"。
+     *                 req.miniprogramType = WXLaunchMiniProgram.Req.MINIPTOGRAM_TYPE_RELEASE;// 可选打开 开发版，体验版和正式版
+     * @param listener 结果监听
+     */
+    public <T extends WXEntryCallbackActivity> void launch(@NonNull Activity activity, WXLaunchMiniProgram.Req req, @NonNull Class<T> tClass, WeChatResultListener listener) {
+        init(activity);
+        mWeChatResultListener = listener;
+        if (mIWXAPI == null)
+            return;
+        if (isWXAppInstalled())
+            return;
+        try {
+            Method method = tClass.getMethod("setWeChatResultListener", WeChatResultListener.class);
+            if (listener != null)
+                method.invoke(null, listener);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        mIWXAPI.sendReq(req);
     }
 
     public void handleIntent(Intent intent, IWXAPIEventHandler iwxapiEventHandler) {

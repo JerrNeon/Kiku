@@ -2,6 +2,7 @@ package com.jn.kiku.ttp.wxapi;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -56,6 +57,9 @@ public class WXEntryCallbackActivity extends AppCompatActivity implements IWXAPI
                     //支付成功
                     logI("onResp: 支付成功");
                     showToast("支付成功");
+                } else if (baseResp.getType() == ConstantsAPI.COMMAND_LAUNCH_WX_MINIPROGRAM) {
+                    //WXLaunchMiniProgram.Resp baseResp
+                    logI("onResp: 启动小程序成功");
                 }
                 if (mWeChatResultListener != null)
                     mWeChatResultListener.onSuccess(baseResp);
@@ -73,6 +77,8 @@ public class WXEntryCallbackActivity extends AppCompatActivity implements IWXAPI
                     //支付取消
                     logI("onResp: 取消支付");
                     showToast("取消支付");
+                } else if (baseResp.getType() == ConstantsAPI.COMMAND_LAUNCH_WX_MINIPROGRAM) {
+                    logI("onResp: 取消启动小程序");
                 }
                 break;
             default:
@@ -88,6 +94,8 @@ public class WXEntryCallbackActivity extends AppCompatActivity implements IWXAPI
                     //支付失败
                     logE("onResp:支付失败");
                     showToast("支付失败");
+                } else if (baseResp.getType() == ConstantsAPI.COMMAND_LAUNCH_WX_MINIPROGRAM) {
+                    logI("onResp: 启动小程序失败");
                 }
                 if (mWeChatResultListener != null)
                     mWeChatResultListener.onFailure(baseResp);
