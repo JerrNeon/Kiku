@@ -51,7 +51,7 @@ public class UriUtils {
         try {
             Uri uri = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                uri = FileProvider.getUriForFile(context, application_id + ".fileProvider", new File(filePath));
+                uri = FileProvider.getUriForFile(context, application_id + ".fileprovider", new File(filePath));
             } else
                 uri = Uri.fromFile(new File(filePath));
             return uri;
