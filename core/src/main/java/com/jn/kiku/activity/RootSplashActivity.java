@@ -3,11 +3,13 @@ package com.jn.kiku.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+
 import androidx.annotation.Nullable;
 
 import com.jn.common.SPManage;
 import com.jn.kiku.R;
 import com.jn.kiku.common.api.ISplashView;
+import com.jn.kiku.utils.StatusBarUtils;
 import com.jn.kiku.utils.manager.BaseManager;
 
 /**
@@ -23,10 +25,16 @@ public abstract class RootSplashActivity extends RootActivity implements Handler
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBar();
         setTheme(R.style.SplashTheme);
         if (getImgResourceId() != 0)
             getWindow().getDecorView().setBackgroundResource(getImgResourceId());
         initView();
+    }
+
+    @Override
+    public void setStatusBar() {
+        StatusBarUtils.setTransparent(this);
     }
 
     @Override
