@@ -1,11 +1,14 @@
 package com.jn.kiku.service;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
@@ -24,15 +27,15 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MediaType;
 
 /**
- * @version V1.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (版本更新服务)
- * @create by: chenwei
- * @date 2018/5/18 12:05
+ * Author：Stevie.Chen Time：2019/9/29
+ * Class Comment：版本更新服务
  */
 public class VersionUpdateService extends Service {
+
+    private static final String CHANNEL_ID = VersionUpdateService.class.getSimpleName();//渠道ID
 
     protected Notification mNotification = null;//下载任务栏通知框
     private float mCurrentProgress = 0;//下载进度
@@ -52,11 +55,18 @@ public class VersionUpdateService extends Service {
 
     /**
      * 下载文件
-     *
-     * @param versionUpdateVO
      */
     private void downloadFile(final VersionUpdateVO versionUpdateVO) {
         final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelName = getString(R.string.app_name);
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_HIGH);
+            //notificationChannel.enableLights(true);//是否在桌面icon右上角展示小红点
+            //notificationChannel.setLightColor(Color.GREEN);//小红点颜色
+            if (manager != null) {
+                manager.createNotificationChannel(notificationChannel);
+            }
+        }
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1");
         builder.setSmallIcon(versionUpdateVO.getAppIconResId());
         builder.setContentTitle(versionUpdateVO.getAppName());
@@ -70,13 +80,19 @@ public class VersionUpdateService extends Service {
                         mCurrentProgress = progress2;
                         builder.setContentText(String.format(getResources().getString(R.string.versionUpdate_downloadProgress), (int) progress2));
                         builder.setProgress(100, (int) progress2, false);
-                        manager.notify(0, builder.build());
+                        if (manager != null) {
+                            manager.notify(0, builder.build());
+                        }
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(responseBody -> {
-                    String mimeType = responseBody.contentType().type() + File.separator + responseBody.contentType().subtype();
+                    MediaType mediaType = responseBody.contentType();
+                    String mimeType = "";
+                    if (mediaType != null) {
+                        mimeType = mediaType.type() + File.separator + mediaType.subtype();
+                    }
                     String fileSuffix = FileTypeUtils.getFileSuffix(mimeType);//文件后缀名
                     String filePath = ImageUtil.getFileCacheFile().getAbsolutePath() + File.separator + downLoadFileName + "." + fileSuffix;
                     FileIOUtils.writeFileFromIS(filePath, responseBody.byteStream());
@@ -93,7 +109,9 @@ public class VersionUpdateService extends Service {
                         mNotification = builder.build();
                         mNotification.vibrate = new long[]{500, 500};
                         mNotification.defaults = Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND;
-                        manager.notify(0, mNotification);
+                        if (manager != null) {
+                            manager.notify(0, mNotification);
+                        }
                     }
 
                     @Override
@@ -104,7 +122,9 @@ public class VersionUpdateService extends Service {
                         builder.setAutoCancel(true);//设置点击后消失
                         builder.setContentText(getResources().getString(R.string.versionUpdate_downloadComplete));
                         builder.setProgress(100, 100, false);
-                        manager.notify(0, builder.build());
+                        if (manager != null) {
+                            manager.notify(0, builder.build());
+                        }
                         Intent broadcastIntent = new Intent(VersionUpdateReceiver.VERSION_UPDATE_ACTION);
                         broadcastIntent.putExtra(VersionUpdateReceiver.VERSION_UPDATE_ACTION, getResources().getString(R.string.versionUpdate_downloadComplete));
                         sendBroadcast(broadcastIntent);
@@ -117,7 +137,9 @@ public class VersionUpdateService extends Service {
                         e.printStackTrace();
                         mCurrentProgress = 0;
                         builder.setContentText(getResources().getString(R.string.versionUpdate_downloadFailure));
-                        manager.notify(0, builder.build());
+                        if (manager != null) {
+                            manager.notify(0, builder.build());
+                        }
                         Intent broadcastIntent = new Intent(VersionUpdateReceiver.VERSION_UPDATE_ACTION);
                         broadcastIntent.putExtra(VersionUpdateReceiver.VERSION_UPDATE_ACTION, getResources().getString(R.string.versionUpdate_downloadFailure));
                         sendBroadcast(broadcastIntent);

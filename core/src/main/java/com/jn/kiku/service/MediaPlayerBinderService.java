@@ -4,6 +4,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
@@ -22,7 +24,7 @@ import com.jn.kiku.BuildConfig;
  */
 public class MediaPlayerBinderService extends Service {
 
-    private static final String TAG = "MediaPlayerBService";
+    private static final String TAG = MediaPlayerBinderService.class.getSimpleName();
     private static final int MSG_CODE = 0x01;
     private MediaPlayer mediaPlayer;//音乐播放关键类
     private WifiManager.WifiLock wifiLock;//保持音乐于后台播放的lock
@@ -31,6 +33,7 @@ public class MediaPlayerBinderService extends Service {
     private boolean isPause = false;//是否暂停
     private IPlayProgressListener mIPlayProgressListener;//进度监听
     private Thread mRecordProgressThread;//记录进度的线程
+    private AudioManager mAudioManager;//音频管理器
 
     private Handler mHandler = new Handler(msg -> {
         if (msg.what == MSG_CODE) {
@@ -68,6 +71,7 @@ public class MediaPlayerBinderService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         logD("onBind");
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         if (intent != null)
             mMusicUrl = intent.getStringExtra(String.class.getSimpleName());
         return mediaPlayerBinder;
@@ -96,6 +100,13 @@ public class MediaPlayerBinderService extends Service {
         // 设置音量，参数分别表示左右声道声音大小，取值范围为0~1
         //mediaPlayer.setVolume(0.5f, 0.5f);
 
+        //设置属性
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+        mediaPlayer.setAudioAttributes(audioAttributes);
+
         // 设置是否循环播放
         mediaPlayer.setLooping(false);
 
@@ -107,7 +118,7 @@ public class MediaPlayerBinderService extends Service {
         // 如果你使用wifi播放流媒体，你还需要持有wifi锁
         WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (manager != null) {
-            wifiLock = manager.createWifiLock(WifiManager.WIFI_MODE_FULL, "wifilock");
+            wifiLock = manager.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "wifilock");
         }
         if (wifiLock != null)
             wifiLock.acquire();
@@ -157,6 +168,14 @@ public class MediaPlayerBinderService extends Service {
                 mediaPlayer.prepareAsync();
                 recordPlayProgress();
             }
+            // Request audio focus for playback
+            int result = mAudioManager.requestAudioFocus(afChangeListener,
+                    // Use the music stream.
+                    AudioManager.STREAM_MUSIC, // Request permanent focus.
+                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED && !isPause) {
+                mediaPlayer.start();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -167,6 +186,7 @@ public class MediaPlayerBinderService extends Service {
         if (mediaPlayer != null) {
             mediaPlayer.pause();
             isPause = true;
+            abandonAudioFocus();
         }
     }
 
@@ -186,6 +206,7 @@ public class MediaPlayerBinderService extends Service {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+        abandonAudioFocus();
         if (wifiLock != null && wifiLock.isHeld())
             wifiLock.release();
     }
@@ -209,6 +230,14 @@ public class MediaPlayerBinderService extends Service {
         mRecordProgressThread.start();
     }
 
+    /**
+     * 失去焦点
+     */
+    private void abandonAudioFocus() {
+        if (mAudioManager != null)
+            mAudioManager.abandonAudioFocus(afChangeListener);
+    }
+
     public interface IPlayProgressListener {
 
         void onPrepared(MediaPlayer mediaPlayer);
@@ -226,6 +255,37 @@ public class MediaPlayerBinderService extends Service {
             return MediaPlayerBinderService.this;
         }
     }
+
+    /**
+     * 音频焦点监听
+     */
+    AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        public void onAudioFocusChange(int focusChange) {
+            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                }
+
+            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                if (mediaPlayer == null) {
+                    initMediaPlayer();
+                } else if (!mediaPlayer.isPlaying()) {
+                    mediaPlayer.start();
+                }
+                // Resume playback
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
+                abandonAudioFocus();
+                // Stop playback
+            } else if (focusChange == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
+            }
+        }
+    };
 
     private void logD(String msg) {
         if (BuildConfig.DEBUG)

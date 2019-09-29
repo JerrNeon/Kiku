@@ -7,11 +7,8 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 
 /**
- * @version V1.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (进程保活服务, 设置服务为前台服务)
- * @create by: chenwei
- * @date 2018/6/12 15:45
+ * Author：Stevie.Chen Time：2019/9/29
+ * Class Comment：进程保活服务, 设置服务为前台服务
  */
 public class ProcessAliveService extends Service {
 
