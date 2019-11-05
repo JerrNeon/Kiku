@@ -78,7 +78,7 @@ public abstract class RootRvFragment<P extends IBPresenter, T> extends RootRefre
         if (getLoadMoreEnableType() == LoadMoreEnableType.TOTAL)
             return mAdapter.getItemCount() < getTotalSize();
         else if (getLoadMoreEnableType() == LoadMoreEnableType.PAGE)
-            return getPageSize() < getTotalPage();
+            return getPageIndex() < getTotalPage();
         return super.isLoadMoreEnable();
     }
 

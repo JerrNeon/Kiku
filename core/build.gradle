@@ -78,5 +78,3 @@ dependencies {
     //Tencent WebView
     api dep["tbssdk"]
 }
-
-apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
