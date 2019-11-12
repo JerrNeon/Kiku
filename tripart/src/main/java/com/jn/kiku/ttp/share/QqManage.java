@@ -48,6 +48,7 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
     private Application mContext;
     private Tencent mTencent = null;
     private static final String mScope = "all";//要所有权限，不然会再次申请增量权限，这里不要设置成get_user_info,add_t
+    private IUiListenerIml mIUiListenerIml = null;//登录、分享官方回调
     private QqResultListener mQqResultListener = null;//登录、分享结果监听
     private QqUserInfoResultListener mQqUserInfoResultListener = null;//用户信息监听
     private @QQType
@@ -74,6 +75,8 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
     private void init() {
         if (mTencent == null)
             mTencent = Tencent.createInstance(TtpConstants.QQ_APP_ID, mContext);
+        if (mIUiListenerIml == null)
+            mIUiListenerIml = new IUiListenerIml();
     }
 
     /**
@@ -89,7 +92,7 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
         }
         mQQType = LOGIN;
         mQqResultListener = listener;
-        mTencent.login(activity, mScope, new IUiListenerIml());
+        mTencent.login(activity, mScope, mIUiListenerIml);
     }
 
     /**
@@ -104,7 +107,7 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
             return;
         mQQType = LOGIN;
         mQqUserInfoResultListener = listener;
-        mTencent.login(activity, mScope, new IUiListenerIml());
+        mTencent.login(activity, mScope, mIUiListenerIml);
     }
 
     /**
@@ -149,7 +152,7 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
             //手Q客户端顶部，替换“返回”按钮文字，如果为空，用返回代替
             if ("".equals(params.getString(QQShare.SHARE_TO_QQ_APP_NAME, "")))
                 params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "test");
-            mTencent.shareToQQ(activity, params, new IUiListenerIml());
+            mTencent.shareToQQ(activity, params, mIUiListenerIml);
         }
     }
 
@@ -194,7 +197,7 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
                 bundle.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, qqShareMessage.getSummary());//选填
             if (qqShareMessage.getImageUrl() != null)
                 bundle.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, qqShareMessage.getImageUrl());// 图片地址
-            mTencent.shareToQQ(activity, bundle, new IUiListenerIml());
+            mTencent.shareToQQ(activity, bundle, mIUiListenerIml);
         }
     }
 
@@ -220,9 +223,9 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
             ArrayList<String> imgUrlList = new ArrayList<>();
             imgUrlList.add("http://f.hiphotos.baidu.com/image/h%3D200/sign=6f05c5f929738bd4db21b531918a876c/6a600c338744ebf8affdde1bdef9d72a6059a702.jpg");
             bundle.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgUrlList);// 图片地址
-            mTencent.shareToQzone(activity, bundle, new IUiListenerIml());
+            mTencent.shareToQzone(activity, bundle, mIUiListenerIml);
         } else
-            mTencent.shareToQzone(activity, params, new IUiListenerIml());
+            mTencent.shareToQzone(activity, params, mIUiListenerIml);
     }
 
     /**
@@ -252,12 +255,12 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
                 imgUrlList.add(qqShareMessage.getImageUrl());
                 bundle.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgUrlList);// 图片地址
             }
-            mTencent.shareToQzone(activity, bundle, new IUiListenerIml());
+            mTencent.shareToQzone(activity, bundle, mIUiListenerIml);
         }
     }
 
     public void onActivityResultData(int requestCode, int resultCode, Intent data) {
-        boolean result = Tencent.onActivityResultData(requestCode, resultCode, data, new IUiListenerIml());
+        boolean result = Tencent.onActivityResultData(requestCode, resultCode, data, mIUiListenerIml);
         logI("onActivityResultData：" + result);
     }
 
@@ -351,14 +354,17 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
                 showToast("分享成功");
             int ret = jsonResponse.optInt("ret");
             if (ret == 0) {
+                String openId = jsonResponse.optString("openid");
+                String accessToken = jsonResponse.optString("access_token");
+                long expires = jsonResponse.optLong("expires_in");
+                QqUserInfoVO vo = new QqUserInfoVO()
+                        .setOpenid(openId)
+                        .setAccess_token(accessToken);
                 if (mQqResultListener != null)
-                    mQqResultListener.onSuccess(jsonResponse);
-                if (mTencent != null) {
-                    String openId = jsonResponse.optString("openid");
-                    String accessToken = jsonResponse.optString("access_token");
-                    long expires = jsonResponse.optLong("expires_in");
+                    mQqResultListener.onSuccess(vo);
+                if (mQqUserInfoResultListener != null && mTencent != null) {
                     mTencent.setOpenId(openId);
-                    mTencent.setAccessToken(accessToken, expires + "");
+                    mTencent.setAccessToken(accessToken, String.valueOf(expires));
                     getUserInfo(openId, accessToken);
                 }
             }
@@ -441,6 +447,8 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
     private void onDestroy() {
         if (mTencent != null)
             mTencent = null;
+        if (mIUiListenerIml != null)
+            mIUiListenerIml = null;
         if (mQqResultListener != null)
             mQqResultListener = null;
         if (mQqUserInfoResultListener != null)
@@ -448,7 +456,7 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
     }
 
     public interface QqResultListener {
-        void onSuccess(JSONObject response);
+        void onSuccess(QqUserInfoVO response);
 
         void onFailure();
     }
@@ -460,26 +468,6 @@ public class QqManage implements ILogToastView, DefaultLifecycleObserver {
     @Override
     public void onCreate(@NonNull LifecycleOwner owner) {
         init();
-    }
-
-    @Override
-    public void onStart(@NonNull LifecycleOwner owner) {
-
-    }
-
-    @Override
-    public void onResume(@NonNull LifecycleOwner owner) {
-
-    }
-
-    @Override
-    public void onPause(@NonNull LifecycleOwner owner) {
-
-    }
-
-    @Override
-    public void onStop(@NonNull LifecycleOwner owner) {
-
     }
 
     @Override

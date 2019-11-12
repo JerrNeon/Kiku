@@ -170,7 +170,8 @@ public class SinaManage implements WbShareCallback, ILogToastView, DefaultLifecy
                 //ToastUtil.showToast(mContext, "登录成功");
                 if (mSinaResultListener != null)
                     mSinaResultListener.onSuccess(token);
-                getUserInfo(token);
+                if (mSinaUserInfoResultListener != null)
+                    getUserInfo(token);
             }
         }
 
