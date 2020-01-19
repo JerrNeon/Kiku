@@ -5,14 +5,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.LifecycleOwner;
-
 import com.jn.kiku.R;
 import com.jn.kiku.common.api.IBaseView;
 import com.jn.kiku.common.api.IDisposableView;
@@ -23,6 +15,13 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.EventBus;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.disposables.CompositeDisposable;
@@ -122,10 +121,19 @@ public class BaseManager implements IImageView, IBaseView, IDisposableView, Defa
             mProgressDialog.show(mAppCompatActivity.getSupportFragmentManager(), "");
     }
 
+    public void showProgressDialog(int type) {
+        if (mProgressDialog == null)
+            mProgressDialog = ProgressDialogFragment.newInstance(type);
+        if (mAppCompatActivity != null)
+            mProgressDialog.show(mAppCompatActivity.getSupportFragmentManager(), "");
+    }
+
     @Override
     public void dismissProgressDialog() {
-        if (mProgressDialog != null)
+        if (mProgressDialog != null) {
             mProgressDialog.cancel();
+            mProgressDialog = null;
+        }
     }
 
     @Override

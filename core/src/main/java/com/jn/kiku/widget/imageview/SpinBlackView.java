@@ -6,8 +6,6 @@ import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
-import com.jn.kiku.R;
-
 
 /**
  * Author：Stevie.Chen Time：2019/8/29
@@ -31,7 +29,7 @@ public class SpinBlackView extends AppCompatImageView {
     }
 
     private void init() {
-        setImageResource(R.drawable.ic_kiku_progress);
+        //setImageResource(R.drawable.ic_kiku_progress);
         mFrameTime = 1000 / 12;
         mUpdateViewRunnable = new Runnable() {
             @Override

@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.jn.kiku.R;
+import com.jn.kiku.widget.imageview.SpinBlackView;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,14 +21,14 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.jn.kiku.R;
-import com.jn.kiku.widget.imageview.SpinBlackView;
-
 /**
  * Author：Stevie.Chen Time：2019/8/29
  * Class Comment：加载对话框
  */
 public class ProgressDialogFragment extends DialogFragment {
+
+    private static final int TYPE_BLACK = 0x01;
+    public static final int TYPE_WHITE = 0x02;
 
     private static final int DELAY_MILLISECOND = 450;
     private static final int SHOW_MIN_MILLISECOND = 300;
@@ -34,9 +37,18 @@ public class ProgressDialogFragment extends DialogFragment {
     private boolean startedShowing;
     private long mStartMillisecond;
     private long mStopMillisecond;
+    private int mType = TYPE_BLACK;//类型
 
     public static ProgressDialogFragment newInstance() {
-        return new ProgressDialogFragment();
+        return newInstance(TYPE_BLACK);
+    }
+
+    public static ProgressDialogFragment newInstance(int type) {
+        ProgressDialogFragment fragment = new ProgressDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(Integer.class.getSimpleName(), type);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     // default constructor. Needed so rotation doesn't crash
@@ -48,7 +60,11 @@ public class ProgressDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_progress, container, false);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            mType = bundle.getInt(Integer.class.getSimpleName(), TYPE_BLACK);
+        }
+        View view = LayoutInflater.from(getContext()).inflate(mType == TYPE_BLACK ? R.layout.dialog_progress : R.layout.dialog_progress_white, container, false);
         mSpinBlackProgressView = view.findViewById(R.id.sbv_progressDialog);
         return view;
     }
@@ -119,7 +135,6 @@ public class ProgressDialogFragment extends DialogFragment {
 
     /**
      * 设置加载图标
-     *
      */
     public ProgressDialogFragment setProgressImageResource(@DrawableRes int resId) {
         if (mSpinBlackProgressView != null)
