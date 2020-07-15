@@ -1,16 +1,16 @@
 package com.jn.example.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
+import androidx.fragment.app.Fragment;
 
 import com.jn.example.R;
 import com.jn.example.entiy.XaResult2;
-import com.jn.example.request.ApiService;
+import com.jn.example.request.Api;
 import com.jn.kiku.activity.RootMainActivity;
 import com.jn.kiku.entiy.VersionUpdateVO;
-import com.jn.kiku.retrofit.RetrofitManage;
+import com.jn.kiku.net.RetrofitManage;
 import com.jn.kiku.utils.AppUtils;
-import com.trello.rxlifecycle2.android.ActivityEvent;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -63,11 +63,10 @@ public class MainActivity extends RootMainActivity {
     @Override
     public void sendRequest() {
         RetrofitManage.getInstance()
-                .create(ApiService.class)
+                .create(Api.class)
                 .getVersionUpdateInfo(1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(this.<XaResult2<VersionUpdateVO>>bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(new Observer<XaResult2<VersionUpdateVO>>() {
                     @Override
                     public void onSubscribe(Disposable d) {

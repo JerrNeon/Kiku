@@ -1,27 +1,39 @@
 apply plugin: 'com.android.application'
-def config = rootProject.ext.android //config
+
 def dep = rootProject.ext.dependencies //dep
 def jPush = rootProject.ext.jpush //jpush
 
 android {
-    compileSdkVersion config.compileSdkVersion
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
     defaultConfig {
-        applicationId config.applicationId
-        minSdkVersion config.minSdkVersion
-        targetSdkVersion config.targetSdkVersion
-        versionCode config.versionCode
-        versionName config.versionName
-        multiDexEnabled config.multiDexEnabled
+        applicationId rootProject.ext.applicationId
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+        multiDexEnabled rootProject.ext.multiDexEnabled
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders = [
-                JPUSH_PKGNAME: config.applicationId,
+                JPUSH_PKGNAME: rootProject.ext.applicationId,
                 JPUSH_APPKEY : jPush.JPUSH_APPKEY, //JPush AppKey.
                 JPUSH_CHANNEL: jPush.JPUSH_CHANNEL, //default value
         ]
     }
+
     buildTypes {
+        debug {
+            buildConfigField "String", "BASE_URL", "\"https://api.apiopen.top/\""
+        }
+        debugTest {
+            buildConfigField "String", "BASE_URL", "\"https://api.apiopen.top/\""
+        }
+        releaseTest {
+            buildConfigField "String", "BASE_URL", "\"https://api.apiopen.top/\""
+        }
         release {
+            buildConfigField "String", "BASE_URL", "\"https://api.apiopen.top/\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -30,32 +42,28 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation project(':kiku')
-    implementation project(':kiku-ttp')
     implementation dep["junit"]
 
+    implementation project(':core')
+    implementation project(':tripart')
+
     implementation dep["support-v4"]
-    implementation dep["appcompat-v7"]
-    implementation dep["design"]
-    implementation dep["recyclerview-v7"]
     implementation dep["constraint-layout"]
 
-    implementation dep["butterknife"]
     annotationProcessor dep["butterknife-annotationProcessor"]
-    implementation dep["retrofit"]
-    implementation dep["rxjava2"]
-    implementation dep["rxandroid2"]
     implementation dep["rxlifecycle"]
     implementation dep["rxlifecycle-android"]
 
-    implementation dep["BaseRecyclerViewAdapterHelper"]
-    implementation dep["SmartRefreshLayout"]
-
     implementation dep["multidex"]
+    implementation dep["jiaozivideoplayer"]
 
 }

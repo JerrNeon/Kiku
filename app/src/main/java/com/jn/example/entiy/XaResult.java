@@ -1,42 +1,36 @@
 package com.jn.example.entiy;
 
 /**
- * @version V1.0
- * @ClassName: ${CLASS_NAME}
- * @Description: (CMS)
- * @create by: chenwei
- * @date 2018/05/09 14:20
+ * Author：Stevie.Chen Time：2019/9/11
+ * Class Comment：
  */
 public class XaResult<T> {
 
     private int code;
-    private String msg;
-    private T data;
+    private String message;
+    private T result;
 
     public int getCode() {
         return code;
     }
 
-    public XaResult<T> setCode(int code) {
+    public void setCode(int code) {
         this.code = code;
-        return this;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getMessage() {
+        return message;
     }
 
-    public XaResult<T> setMsg(String msg) {
-        this.msg = msg;
-        return this;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public T getData() {
-        return data;
+    public T getResult() {
+        return result;
     }
 
-    public XaResult<T> setData(T data) {
-        this.data = data;
-        return this;
+    public void setResult(T result) {
+        this.result = result;
     }
 }

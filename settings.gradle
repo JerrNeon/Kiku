@@ -1,1 +1,1 @@
-include ':app', ':kiku', ':kiku-ttp'
+include ':app', ':core', ':tripart', ':common', ':net'

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--加载-->
+    <string name="kiku_load_failure">页面加载失败，轻触屏幕重新加载</string>
+    <string name="kiku_load_nonet">网络情况不太好，轻触屏幕重新加载</string>
+    <string name="kiku_load_nodata">暂无数据~</string>
+</resources>

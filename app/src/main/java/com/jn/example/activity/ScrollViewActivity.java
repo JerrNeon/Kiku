@@ -1,15 +1,17 @@
 package com.jn.example.activity;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.widget.ScrollView;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.jn.example.R;
 import com.jn.kiku.activity.RootTbActivity;
 import com.jn.kiku.utils.ImageUtil;
 
 import butterknife.BindView;
+
 
 /**
  * @version V1.0
