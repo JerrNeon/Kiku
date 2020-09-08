@@ -439,7 +439,7 @@ public class WeChatManage implements DefaultLifecycleObserver {
         RetrofitManage.getInstance().create(WeChatApiService.WeChatBaseUrl, WeChatApiService.class)
                 .getAccessToken(WeChatApiService.GET_ACCESS_TOKEN, TtpConstants.WECHAT_APP_ID, TtpConstants.WECHAT_SECRET, ((SendAuth.Resp) baseResp).code, "authorization_code")
                 .flatMap((Function<WeChatAccessTokenVO, ObservableSource<WeChatUserInfoVO>>) weChatAccessTokenVO -> RetrofitManage.getInstance().create(WeChatApiService.WeChatBaseUrl, WeChatApiService.class)
-                        .getUserInfo(WeChatApiService.CHECK_ACCESS_TOKEN, weChatAccessTokenVO.getAccess_token(), weChatAccessTokenVO.getOpenid()))
+                        .getUserInfo(WeChatApiService.GET_ACCESS_TOKEN, weChatAccessTokenVO.getAccess_token(), weChatAccessTokenVO.getOpenid()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<WeChatUserInfoVO>() {
